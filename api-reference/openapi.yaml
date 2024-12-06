@@ -4,7 +4,7 @@ info:
   description: Documentation for the Aira Billing API.
   version: "1.0"
 servers:
-  - url: https://api.aira.com/v1
+  - url: https://api.useaira.com/v1
 security:
   - ApiKeyAuth: []
 
@@ -2336,3 +2336,79 @@ paths:
             application/json:
               schema:
                 description: Contract not found.
+  /v1/resources/:
+    post:
+      summary: Create Resource
+      tags:
+        - Resources
+      description: >-
+        This endpoint allows for the creation of a resource used in customer billing.
+        Each resource is defined by a name and an external identifier. Upon successful
+        creation, a unique UUID for the resource is returned.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                description: Schema defining a resource.
+                properties:
+                  resourceExternalId:
+                    type: string
+                    minLength: 1
+                    description: External identifier of the resource.
+                  name:
+                    type: string
+                    minLength: 1
+                    description: The name of the resource.
+               
+                required:
+                  - resourceExternalId
+                  - name
+                additionalProperties: false
+              minItems: 1
+              description: >-
+                An object representing a resource, including its name and externalId.
+                Both fields are required and must be non-empty strings.
+      x-expose-in-openapi: true
+      responses:
+        '204':
+          description: >-
+            The request was successfully processed and the events were recorded.
+            No content is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The unique identifier of the resource.
+                  resourceExternalId:
+                    type: string
+                    format: uuid
+                    description: The external identifier of the resource.
+                  name:
+                    type: string
+                    format: uuid
+                    description: The name of the resource.
+                required:
+                    - id
+                    - resourceExternalId
+                    - name
+                additionalProperties: false
+
+
+        '400':
+          description: >-
+            Invalid request due to the external ID belonging to a different
+            resource, or duplication found within the array of resource IDs.
+          content:
+            application/json:
+              schema:
+                description: >-
+                  Invalid request due to the external ID belonging to a
+                  different resource, or duplication found within the array of
+                  resource IDs.
