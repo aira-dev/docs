@@ -28,7 +28,7 @@
     "tabs": [],
     "anchors": [
         {
-            "name": "API Reference",
+            "name": "Documentação da API",
             "openapi": "/api-reference/openapi.yaml",
             "url": "api-reference",
             "icon": "square-terminal"
