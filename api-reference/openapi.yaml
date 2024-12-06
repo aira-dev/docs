@@ -1,20 +1,20 @@
 openapi: 3.0.3
 info:
-  title: Aira API
-  description: Documentation for the Aira Billing API.
-  version: "1.0"
-servers:
-  - url: https://api.useaira.com/v1
-security:
-  - ApiKeyAuth: []
-
+  title: Aira - Documentação API
+  version: '1.0'
+  description: Aira Billing API
+  x-logo:
+    url: https://static.useaira.com/images/airalogo.svg
+    backgroundColor: '#FFFFFF'
+    altText: Aira Logo
 components:
   securitySchemes:
-    ApiKeyAuth:
+    ApiKey:
       type: apiKey
+      description: API Key Authentication.
       name: X-API-KEY
       in: header
-      
+  schemas: {}
 paths:
   /v1/events/:
     post:
@@ -1266,12 +1266,17 @@ paths:
                         Schema defining payment gateway settings for a contract.
                         Required if payment gateway is enabled.
                       properties:
-                        paymentOffsetDays:
+                        scheduledPaymentDay:
                           type: number
-                          minimum: 0
+                          minimum: 1
+                          maximum: 31
                           description: >-
-                            Number of days after the invoice is closed when the
-                            payment will be initiated.
+                            The specific day of the month when the payment will
+                            be scheduled. For example, a value of 1 means the
+                            payment will be scheduled on the 1st day of the
+                            month. A value of 31 represents the last day of the
+                            month, regardless of whether the month has 28, 30,
+                            or 31 days.
                         dueOffsetDays:
                           type: number
                           minimum: 5
@@ -1279,7 +1284,7 @@ paths:
                             Number of days after the payment start date until
                             payment is due (minimum of 5 days).
                       required:
-                        - paymentOffsetDays
+                        - scheduledPaymentDay
                         - dueOffsetDays
                       additionalProperties: false
                       nullable: true
@@ -1381,12 +1386,17 @@ paths:
                           Schema defining payment gateway settings for a
                           contract. Required if payment gateway is enabled.
                         properties:
-                          paymentOffsetDays:
+                          scheduledPaymentDay:
                             type: number
-                            minimum: 0
+                            minimum: 1
+                            maximum: 31
                             description: >-
-                              Number of days after the invoice is closed when
-                              the payment will be initiated.
+                              The specific day of the month when the payment
+                              will be scheduled. For example, a value of 1 means
+                              the payment will be scheduled on the 1st day of
+                              the month. A value of 31 represents the last day
+                              of the month, regardless of whether the month has
+                              28, 30, or 31 days.
                           dueOffsetDays:
                             type: number
                             minimum: 5
@@ -1394,7 +1404,7 @@ paths:
                               Number of days after the payment start date until
                               payment is due (minimum of 5 days).
                         required:
-                          - paymentOffsetDays
+                          - scheduledPaymentDay
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
@@ -1756,12 +1766,17 @@ paths:
                         Schema defining payment gateway settings for a contract.
                         Required if payment gateway is enabled.
                       properties:
-                        paymentOffsetDays:
+                        scheduledPaymentDay:
                           type: number
-                          minimum: 0
+                          minimum: 1
+                          maximum: 31
                           description: >-
-                            Number of days after the invoice is closed when the
-                            payment will be initiated.
+                            The specific day of the month when the payment will
+                            be scheduled. For example, a value of 1 means the
+                            payment will be scheduled on the 1st day of the
+                            month. A value of 31 represents the last day of the
+                            month, regardless of whether the month has 28, 30,
+                            or 31 days.
                         dueOffsetDays:
                           type: number
                           minimum: 5
@@ -1769,7 +1784,7 @@ paths:
                             Number of days after the payment start date until
                             payment is due (minimum of 5 days).
                       required:
-                        - paymentOffsetDays
+                        - scheduledPaymentDay
                         - dueOffsetDays
                       additionalProperties: false
                       nullable: true
@@ -1877,12 +1892,17 @@ paths:
                           Schema defining payment gateway settings for a
                           contract. Required if payment gateway is enabled.
                         properties:
-                          paymentOffsetDays:
+                          scheduledPaymentDay:
                             type: number
-                            minimum: 0
+                            minimum: 1
+                            maximum: 31
                             description: >-
-                              Number of days after the invoice is closed when
-                              the payment will be initiated.
+                              The specific day of the month when the payment
+                              will be scheduled. For example, a value of 1 means
+                              the payment will be scheduled on the 1st day of
+                              the month. A value of 31 represents the last day
+                              of the month, regardless of whether the month has
+                              28, 30, or 31 days.
                           dueOffsetDays:
                             type: number
                             minimum: 5
@@ -1890,7 +1910,7 @@ paths:
                               Number of days after the payment start date until
                               payment is due (minimum of 5 days).
                         required:
-                          - paymentOffsetDays
+                          - scheduledPaymentDay
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
@@ -2064,6 +2084,273 @@ paths:
             application/json:
               schema:
                 description: Contract not found.
+    get:
+      summary: Get Contract
+      tags:
+        - Contracts
+      description: This endpoint allows the retrieval of a contract.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: path
+          name: id
+          required: true
+      x-expose-in-openapi: true
+      responses:
+        '201':
+          description: >-
+            The request was successfully processed and the contract information
+            is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contract:
+                    description: Schema defining the contract details.
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: Unique identifier for the contract.
+                      startDate:
+                        type: string
+                        format: date
+                        description: Date when the contract becomes active.
+                      endDate:
+                        type: string
+                        format: date
+                        nullable: true
+                        description: >-
+                          Optional date when the contract expires. If null, the
+                          contract has no end date.
+                      billingEndDay:
+                        type: number
+                        minimum: 1
+                        maximum: 31
+                        description: Day of the month when the billing cycle ends (1-31).
+                      status:
+                        type: string
+                        enum:
+                          - active
+                          - canceled
+                          - completed
+                        description: Current status of the contract.
+                      plans:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                              minLength: 1
+                            description:
+                              type: string
+                              nullable: true
+                          required:
+                            - id
+                            - name
+                            - description
+                          additionalProperties: false
+                        description: >-
+                          List of subscription plans associated with this
+                          contract.
+                      paymentSettings:
+                        type: object
+                        description: >-
+                          Schema defining payment gateway settings for a
+                          contract. Required if payment gateway is enabled.
+                        properties:
+                          scheduledPaymentDay:
+                            type: number
+                            minimum: 1
+                            maximum: 31
+                            description: >-
+                              The specific day of the month when the payment
+                              will be scheduled. For example, a value of 1 means
+                              the payment will be scheduled on the 1st day of
+                              the month. A value of 31 represents the last day
+                              of the month, regardless of whether the month has
+                              28, 30, or 31 days.
+                          dueOffsetDays:
+                            type: number
+                            minimum: 5
+                            description: >-
+                              Number of days after the payment start date until
+                              payment is due (minimum of 5 days).
+                        required:
+                          - scheduledPaymentDay
+                          - dueOffsetDays
+                        additionalProperties: false
+                        nullable: true
+                    required:
+                      - id
+                      - startDate
+                      - endDate
+                      - billingEndDay
+                      - status
+                      - plans
+                      - paymentSettings
+                    additionalProperties: false
+                  customer:
+                    type: object
+                    description: Schema representing a customer.
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The unique identifier of the customer.
+                      externalId:
+                        type: string
+                        minLength: 1
+                        description: External identifier for the customer.
+                      name:
+                        type: string
+                        minLength: 1
+                        description: The name of the customer.
+                    required:
+                      - id
+                      - externalId
+                      - name
+                    additionalProperties: false
+                  paymentAccount:
+                    description: Schema representing a payment account.
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: The unique identifier of the payment account.
+                      businessName:
+                        type: string
+                        minLength: 1
+                        description: The legal business name of the payment account holder.
+                      tradeName:
+                        type: string
+                        minLength: 1
+                        nullable: true
+                        description: >-
+                          The trade or "doing business as" name of the payment
+                          account holder.
+                      taxId:
+                        type: string
+                        pattern: ^\d{14}$
+                        description: >-
+                          The tax identification number (CNPJ) of the payment
+                          account holder.
+                      email:
+                        type: string
+                        format: email
+                        nullable: true
+                        description: The contact email address for the payment account.
+                      address:
+                        type: object
+                        properties:
+                          zipCode:
+                            type: string
+                            minLength: 8
+                            maxLength: 8
+                            pattern: ^[0-9]{8}$
+                            description: The postal code (CEP) of the address.
+                          number:
+                            type: string
+                            minLength: 1
+                            description: The street number of the address.
+                          street:
+                            type: string
+                            minLength: 1
+                            description: The street name of the address.
+                          neighborhood:
+                            type: string
+                            minLength: 1
+                            description: The neighborhood or district of the address.
+                          city:
+                            type: string
+                            minLength: 1
+                            description: The city name of the address.
+                          state:
+                            type: string
+                            enum:
+                              - AC
+                              - AL
+                              - AP
+                              - AM
+                              - BA
+                              - CE
+                              - DF
+                              - ES
+                              - GO
+                              - MA
+                              - MT
+                              - MS
+                              - MG
+                              - PA
+                              - PB
+                              - PR
+                              - PE
+                              - PI
+                              - RJ
+                              - RN
+                              - RS
+                              - RO
+                              - RR
+                              - SC
+                              - SP
+                              - SE
+                              - TO
+                            description: The state abbreviation of the address.
+                          country:
+                            type: string
+                            enum:
+                              - Brasil
+                            description: The country code of the address.
+                          complement:
+                            type: string
+                            nullable: true
+                            description: >-
+                              Additional address information like apartment
+                              number, floor, etc.
+                        required:
+                          - zipCode
+                          - number
+                          - street
+                          - neighborhood
+                          - city
+                          - state
+                          - country
+                          - complement
+                        additionalProperties: false
+                        nullable: true
+                        description: >-
+                          The physical address associated with the payment
+                          account.
+                    required:
+                      - id
+                      - businessName
+                      - tradeName
+                      - taxId
+                      - email
+                      - address
+                    additionalProperties: false
+                required:
+                  - contract
+                  - customer
+                  - paymentAccount
+                additionalProperties: false
+                description: >-
+                  The request was successfully processed and the contract
+                  information is returned.
+        '404':
+          description: Contract not found.
+          content:
+            application/json:
+              schema:
+                description: Contract not found.
   /v1/contracts/{id}/cancel:
     post:
       summary: Cancel a Contract
@@ -2149,12 +2436,17 @@ paths:
                           Schema defining payment gateway settings for a
                           contract. Required if payment gateway is enabled.
                         properties:
-                          paymentOffsetDays:
+                          scheduledPaymentDay:
                             type: number
-                            minimum: 0
+                            minimum: 1
+                            maximum: 31
                             description: >-
-                              Number of days after the invoice is closed when
-                              the payment will be initiated.
+                              The specific day of the month when the payment
+                              will be scheduled. For example, a value of 1 means
+                              the payment will be scheduled on the 1st day of
+                              the month. A value of 31 represents the last day
+                              of the month, regardless of whether the month has
+                              28, 30, or 31 days.
                           dueOffsetDays:
                             type: number
                             minimum: 5
@@ -2162,7 +2454,7 @@ paths:
                               Number of days after the payment start date until
                               payment is due (minimum of 5 days).
                         required:
-                          - paymentOffsetDays
+                          - scheduledPaymentDay
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
