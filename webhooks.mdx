@@ -1,0 +1,301 @@
+---
+title: "Webhooks Documentation"
+---
+
+## Overview
+
+Our webhook system allows you to receive real-time notifications of events related to payments and invoices. When an event occurs (e.g., a payment status changes, or an invoice status is updated), our system sends a POST request with a JSON payload to your configured endpoint.
+
+### Authentication
+
+To ensure secure communication, we include a `token` in the payload. Your endpoint must verify this token against the one you have configured with our system. Only process requests where the tokens match.
+
+## Events
+
+Below is a list of event types that our system currently supports and their descriptions.
+
+| Event Type               | Description                                     |
+| ------------------------ | ----------------------------------------------- |
+| `payment.status-updated` | Triggered whenever a payment’s status changes.  |
+| `invoice.status-updated` | Triggered whenever an invoice’s status changes. |
+
+## How to Set Up and Receive Webhooks
+
+1. **Register Your Webhook URL and Token**:
+   Provide us with an endpoint URL (e.g., [`https://yourapp.com/webhooks`)](https://yourapp.com/webhooks\)) and a token used to authenticate the incoming requests.
+
+2. **Subscribe to Event Types**:
+   You can choose which event types you want to receive notifications for. When these events occur, we will send a POST request to your endpoint.
+
+3. **Validate the Token**:
+   Each webhook request includes a `token` in the payload. Validate that the token matches the one you’ve configured. If it does not match, reject the request.
+
+4. **Respond with a 2XX HTTP Status**:
+   Return an HTTP 2XX status code to acknowledge receipt. Any other response code will signal a failure and may trigger a retry.
+
+### Payment Status Updated Event
+
+**Topic**: `payment.status-updated`
+
+This event fires whenever a payment’s status is updated. The payload will contain the updated payment information, the related invoice, and a history of payment status changes.
+
+**Payload Structure**:
+
+```json
+{
+  "payment": {
+    "id": "<string>",
+    "status": "<PaymentStatus>",
+    "amount": <number>,
+    "paymentMethod": "<PaymentMethod>",
+    "processedAt": "<string or null>",
+    "createdAt": "<string>",
+    "dueDate": "<YYYY-MM-DD>"
+  },
+  "paymentStatusHistory": [
+    {
+      "id": "<string>",
+      "previousStatus": "<PaymentStatus or null>",
+      "newStatus": "<PaymentStatus>"
+    }
+  ],
+  "invoice": {
+    "id": "<string>",
+    "status": "<BillingCycleStatus>",
+    "startDate": "<string>",
+    "endDate": "<string>",
+    "totalAmount": <number>,
+    "isLocked": <boolean>,
+    "externalProcessorSyncStatus": "<ExternalProcessorSyncBillingCycleStatus>",
+    "closedReason": "<BillingCycleClosedReason or null>",
+    "customer": {
+      "id": "<string>",
+      "name": "<string>",
+      "externalId": "<string>"
+    },
+    "paymentAccount": {
+      "id": "<string>",
+      "businessName": "<string>",
+      "tradeName": "<string or null>",
+      "taxId": "<string or null>",
+      "email": "<string or null>",
+      "address": {
+        "id": "<string>",
+        "number": "<string>",
+        "zipCode": "<string>",
+        "street": "<string>",
+        "neighborhood": "<string>",
+        "city": "<string>",
+        "state": "<State>",
+        "country": "<Country>",
+        "complement": "<string or null>"
+      }
+    }
+  },
+  "tenant": {
+    "id": "<string>",
+    "name": "<string>",
+    "createdAt": "<string>",
+    "updatedAt": "<string>",
+    "deletedAt": "<string or null>",
+    "omieEnabled": <boolean>,
+    "celcashEnabled": <boolean>,
+    "customerHubDomainName": "<string>",
+    "customerHubLoginLogo": "<string>",
+    "customerHubHeaderLogo": "<string>",
+    "webhookSettings": {
+      "id": "<string>",
+      "tenantId": "<string>",
+      "createdAt": "<string>",
+      "updatedAt": "<string>",
+      "deletedAt": "<string or null>",
+      "events": ["payment.status-updated", "invoice.status-updated"],
+      "url": "<string>",
+      "token": "<string>"
+    }
+  }
+}
+```
+
+### Invoice Status Updated Event
+
+**Topic**: `invoice.status-updated`
+
+This event fires whenever an invoice’s status is updated. The payload provides details of the invoice and tenant information.
+
+**Payload Structure**:
+
+```json
+{
+  "invoice": {
+    "id": "<string>",
+    "status": "<BillingCycleStatus>",
+    "startDate": "<string>",
+    "endDate": "<string>",
+    "totalAmount": <number>,
+    "isLocked": <boolean>,
+    "externalProcessorSyncStatus": "<ExternalProcessorSyncBillingCycleStatus>",
+    "closedReason": "<BillingCycleClosedReason or undefined>",
+    "customer": {
+      "id": "<string>",
+      "name": "<string>",
+      "externalId": "<string>"
+    },
+    "paymentAccount": {
+      "id": "<string>",
+      "businessName": "<string>",
+      "tradeName": "<string or null>",
+      "taxId": "<string or null>",
+      "email": "<string or null>",
+      "address": {
+        "id": "<string>",
+        "number": "<string>",
+        "zipCode": "<string>",
+        "street": "<string>",
+        "neighborhood": "<string>",
+        "city": "<string>",
+        "state": "<State>",
+        "country": "<Country>",
+        "complement": "<string or null>"
+      }
+    }
+  },
+  "tenant": {
+    "id": "<string>",
+    "name": "<string>",
+    "createdAt": "<string>",
+    "updatedAt": "<string>",
+    "deletedAt": "<string or null>",
+    "omieEnabled": <boolean>,
+    "celcashEnabled": <boolean>,
+    "customerHubDomainName": "<string>",
+    "customerHubLoginLogo": "<string>",
+    "customerHubHeaderLogo": "<string>",
+    "webhookSettings": {
+      "id": "<string>",
+      "tenantId": "<string>",
+      "createdAt": "<string>",
+      "updatedAt": "<string>",
+      "deletedAt": "<string or null>",
+      "events": ["payment.status-updated", "invoice.status-updated"],
+      "url": "<string>",
+      "token": "<string>"
+    }
+  }
+}
+```
+
+### Enumerations
+
+Some fields use enumerated values. Below are the relevant enums:
+
+* **PaymentStatus**: `created`, `pending`, `paid`, `failed`, `canceled`, `expired`
+
+* **PaymentMethod**: `bolepix`
+
+* **PaymentProcessor**: `celcash`
+
+* **BillingCycleStatus**: `open`, `closed`, `paid`, `canceled`
+
+* **BillingCycleClosedReason**: `end_of_cycle`, `billing_end_day_updated`
+
+* **ExternalProcessorSyncBillingCycleStatus**: `not_applicable`, `not_initiated`, `pending`, `success`, `failed`
+
+* **State**: `AC`, `AL`, `AP`, `AM`, `BA`, `CE`, `DF`, `ES`, `GO`, `MA`, `MT`, `MS`, `MG`, `PA`, `PB`, `PR`, `PE`, `PI`, `RJ`, `RN`, `RS`, `RO`, `RR`, `SC`, `SP`, `SE`, `TO`
+
+* **Country**: `Brasil`
+
+## Handling Webhooks
+
+1. **Parse the JSON payload** from the POST request.
+
+2. **Validate the `token`** in the payload against your known token. If invalid, return an HTTP 401 or 403 response.
+
+3. **Process the event** according to your application’s logic (e.g., update your database, send notifications, etc.).
+
+4. **Acknowledge the webhook** by returning a 2XX status code.
+
+If your application is down or unreachable when we send an event, our system may retry sending it. Implementing idempotency in your event handling logic is advised to prevent duplicates from causing inconsistencies.
+
+## Example
+
+**Example of a `payment.status-updated` Payload**:
+
+```json
+{
+  "payment": {
+    "id": "pay_123",
+    "status": "paid",
+    "amount": 50000,
+    "paymentMethod": "bolepix",
+    "processedAt": "2024-12-13T10:20:30Z",
+    "createdAt": "2024-12-01T08:00:00Z",
+    "dueDate": "2024-12-31"
+  },
+  "paymentStatusHistory": [
+    {
+      "id": "hist_456",
+      "previousStatus": "pending",
+      "newStatus": "paid"
+    }
+  ],
+  "invoice": {
+    "id": "inv_789",
+    "status": "paid",
+    "startDate": "2024-12-01",
+    "endDate": "2024-12-31",
+    "totalAmount": 50000,
+    "isLocked": false,
+    "externalProcessorSyncStatus": "success",
+    "closedReason": null,
+    "customer": {
+      "id": "cust_abc",
+      "name": "John Doe",
+      "externalId": "ext_123"
+    },
+    "paymentAccount": {
+      "id": "acc_xyz",
+      "businessName": "Doe Enterprise",
+      "tradeName": null,
+      "taxId": null,
+      "email": "billing@doe-enterprise.com",
+      "address": {
+        "id": "addr_001",
+        "number": "123",
+        "zipCode": "12345-678",
+        "street": "Main St",
+        "neighborhood": "Downtown",
+        "city": "São Paulo",
+        "state": "SP",
+        "country": "Brasil",
+        "complement": null
+      }
+    }
+  },
+  "tenant": {
+    "id": "tenant_abc123",
+    "name": "Acme Corp",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-12-13T00:00:00Z",
+    "deletedAt": null,
+    "omieEnabled": true,
+    "celcashEnabled": true,
+    "customerHubDomainName": "acme.customerhub.com",
+    "customerHubLoginLogo": "https://assets.acme.com/logos/login.png",
+    "customerHubHeaderLogo": "https://assets.acme.com/logos/header.png",
+    "webhookSettings": {
+      "id": "whs_111",
+      "tenantId": "tenant_abc123",
+      "createdAt": "2024-01-02T00:00:00Z",
+      "updatedAt": "2024-12-13T00:00:00Z",
+      "deletedAt": null,
+      "events": [
+        "payment.status-updated",
+        "invoice.status-updated"
+      ],
+      "url": "https://yourapp.com/webhooks",
+      "token": "secret_token_123"
+    }
+  }
+}
+```
