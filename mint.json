@@ -17,7 +17,7 @@
     },
     "topbarLinks": [
         {
-            "name": "Support",
+            "name": "Suporte",
             "url": "mailto:contato@useaira.com"
         }
     ],
@@ -28,7 +28,7 @@
     "tabs": [],
     "anchors": [
         {
-            "name": "API Reference",
+            "name": "Documentação da API",
             "openapi": "/api-reference/openapi.yaml",
             "url": "api-reference",
             "icon": "square-terminal"
@@ -36,7 +36,7 @@
     ],
     "navigation": [
         {
-            "group": "Aira",
+            "group": "Aira Docs",
             "pages": [
                 "introduction",
                 "api-reference"
@@ -44,8 +44,6 @@
         }
     ],
     "footerSocials": {
-        "linkedin": "https://linkedin.com/company/useaira",
-        "twitter": "https://twitter.com/useaira",
-        "github": "https://github.com/useaira"
+        "linkedin": "https://linkedin.com/company/useaira"
     }
 }
