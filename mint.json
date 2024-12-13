@@ -1,51 +1,57 @@
 {
-    "$schema": "https://mintlify.com/schema.json",
-    "name": "Aira",
-    "logo": {
-        "dark": "/logo/dark.svg",
-        "light": "/logo/light.svg"
-    },
-    "favicon": "/favicon.svg",
-    "colors": {
-        "primary": "#7048E8",
-        "light": "#B197FC",
-        "dark": "#6741D9",
-        "anchors": {
-            "from": "#f3f0ff",
-            "to": "#5f3dc4"
-        }
-    },
-    "topbarLinks": [
-        {
-            "name": "Support",
-            "url": "mailto:contato@useaira.com"
-        }
-    ],
-    "topbarCtaButton": {
-        "name": "Login",
-        "url": "https://app.useaira.com"
-    },
-    "tabs": [],
-    "anchors": [
-        {
-            "name": "API Reference",
-            "openapi": "/api-reference/openapi.yaml",
-            "url": "api-reference",
-            "icon": "square-terminal"
-        }
-    ],
-    "navigation": [
-        {
-            "group": "Aira",
-            "pages": [
-                "introduction",
-                "api-reference"
-            ]
-        }
-    ],
-    "footerSocials": {
-        "linkedin": "https://linkedin.com/company/useaira",
-        "twitter": "https://twitter.com/useaira",
-        "github": "https://github.com/useaira"
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Aira",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#7048E8",
+    "light": "#B197FC",
+    "dark": "#6741D9",
+    "anchors": {
+      "from": "#f3f0ff",
+      "to": "#5f3dc4"
     }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:contato@useaira.com"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Login",
+    "url": "https://app.useaira.com"
+  },
+  "tabs": [],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "openapi": "/api-reference/openapi.yaml",
+      "url": "api-reference",
+      "icon": "square-terminal"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Aira",
+      "pages": [
+        "introduction",
+        {
+          "group": "API Reference",
+          "pages": [
+            "api-reference/openapi",
+            "webhooks"
+          ]
+        }
+      ]
+    }
+  ],
+  "footerSocials": {
+    "linkedin": "https://linkedin.com/company/useaira",
+    "twitter": "https://twitter.com/useaira",
+    "github": "https://github.com/useaira"
+  }
 }
