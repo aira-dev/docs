@@ -42,7 +42,7 @@
         {
           "group": "API Reference",
           "pages": [
-            "api-reference/openapi.yaml",
+            "api-reference",
             "webhooks"
           ]
         }
