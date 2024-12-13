@@ -42,7 +42,7 @@
         {
           "group": "API Reference",
           "pages": [
-            "api-reference/openapi",
+            "api-reference/openapi.yaml",
             "webhooks"
           ]
         }
@@ -51,7 +51,6 @@
   ],
   "footerSocials": {
     "linkedin": "https://linkedin.com/company/useaira",
-    "twitter": "https://twitter.com/useaira",
     "github": "https://github.com/useaira"
   }
 }
