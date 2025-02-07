@@ -16,66 +16,91 @@ components:
       in: header
   schemas: {}
 paths:
-  /v1/events/:
+  /v1/events/ingest:
     post:
-      summary: Record Events
+      summary: Ingest Events
       tags:
         - Events
       description: >-
-        This endpoint allows for the batch recording of events related to
-        customer interactions with resources. Each event captures a unique
-        interaction at a specific point in time, including the involved resource
-        and customer, the nature of the interaction (value), and when it
+        This endpoint allows for ingesting events related to customer
+        interactions with resources. Each event captures interactions at a
+        specific point in time, including the event name and customer, the
+        nature of the interaction (value), related properties and when it
         occurred.
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: object
-                description: Schema defining an event.
-                properties:
-                  resourceExternalId:
-                    type: string
-                    minLength: 1
-                    description: External identifier of the resource involved in the event.
-                  customerExternalId:
-                    type: string
-                    minLength: 1
-                    description: External identifier of the customer involved in the event.
-                  value:
-                    type: number
-                    minimum: 0
-                    description: >-
-                      Numeric value associated with the event. Must be
-                      non-negative.
-                  idempotencyKey:
-                    type: string
-                    minLength: 1
-                    description: Unique key to ensure idempotency of event creation.
-                  occurredAt:
-                    type: string
-                    format: date-time
-                    description: Timestamp indicating when the event occurred.
-                required:
-                  - resourceExternalId
-                  - customerExternalId
-                  - value
-                  - idempotencyKey
-                  - occurredAt
-                additionalProperties: false
-              minItems: 1
+              type: object
               description: >-
-                An array of event objects. Each event includes a
-                resourceExternalId, customerExternalId, value, and occurredAt
-                timestamp, alongside an optional idempotencyKey for ensuring
-                uniqueness. Requires at least one event object to proceed.
+                Events ingestion request, which includes an array of events to
+                be ingested.
+              properties:
+                events:
+                  description: >-
+                    An array of events to be ingested. Each event represents an
+                    usage of a resource from a customer at a specific point in
+                    time.
+                  type: array
+                  items:
+                    type: object
+                    description: Schema defining an event.
+                    properties:
+                      idempotencyKey:
+                        type: string
+                        minLength: 1
+                        pattern: ^\S+$
+                        description: Unique key to ensure idempotency of the event.
+                      eventName:
+                        type: string
+                        minLength: 1
+                        pattern: ^\S+$
+                        description: >-
+                          Identifier of the event. Used on the resource
+                          definition.
+                      customerExternalId:
+                        type: string
+                        minLength: 1
+                        pattern: ^\S+$
+                        description: >-
+                          External identifier of the customer involved in the
+                          event.
+                      properties:
+                        type: object
+                        description: Additional properties associated with the event.
+                        additionalProperties:
+                          oneOf:
+                            - type: string
+                            - type: number
+                            - type: boolean
+                        required:
+                          - value
+                        properties:
+                          value:
+                            type: number
+                            minimum: 0
+                            description: >-
+                              Numeric value associated with the event. Must be
+                              non-negative.
+                      occurredAt:
+                        type: string
+                        format: date-time
+                        description: Timestamp indicating when the event occurred.
+                    required:
+                      - idempotencyKey
+                      - eventName
+                      - customerExternalId
+                      - properties
+                      - occurredAt
+                    additionalProperties: false
+                  minItems: 1
+              required:
+                - events
+              additionalProperties: false
+        required: true
         description: >-
-          An array of event objects. Each event includes a resourceExternalId,
-          customerExternalId, value, and occurredAt timestamp, alongside an
-          optional idempotencyKey for ensuring uniqueness. Requires at least one
-          event object to proceed.
+          Events ingestion request, which includes an array of events to be
+          ingested.
       x-expose-in-openapi: true
       responses:
         '204':
@@ -732,16 +757,6 @@ paths:
                                     type: string
                                     minLength: 1
                                     description: The name of the metric.
-                                  aggregation:
-                                    type: string
-                                    nullable: true
-                                    enum:
-                                      - sum
-                                      - last_during_period
-                                      - null
-                                    description: >-
-                                      The aggregation method used for this
-                                      metric. Can be null.
                                   billingModel:
                                     type: string
                                     description: The billing model type, set to InFull.
@@ -759,10 +774,20 @@ paths:
                                     type: number
                                     minimum: 0
                                     description: The fixed cost amount for this metric.
+                                  minimumAmount:
+                                    type: number
+                                    minimum: 0
+                                    description: The minimum cost amount for this metric.
                                   resourceName:
                                     type: string
                                     minLength: 1
                                     description: The name of the resource.
+                                  resourceType:
+                                    type: string
+                                    enum:
+                                      - unit
+                                      - currency
+                                    description: The resource type.
                                   priceTiers:
                                     type: array
                                     items:
@@ -781,6 +806,7 @@ paths:
                                             - unit
                                             - package
                                             - flat
+                                            - basis_points
                                           description: The billing type for this price tier.
                                         from:
                                           type: number
@@ -802,10 +828,25 @@ paths:
                                             billing. Null if not package-based.
                                         price:
                                           type: string
+                                          nullable: true
                                           pattern: ^\d+(\.\d{1,6})?$
                                           description: >-
                                             The price for this tier in decimal
                                             format.
+                                        fixedPrice:
+                                          type: string
+                                          nullable: true
+                                          pattern: ^\d+(\.\d{1,6})?$
+                                          description: >-
+                                            The fixed price for this tier in decimal
+                                            format.
+                                        basisPoints:
+                                          type: number
+                                          nullable: true
+                                          minimum: 1
+                                          description: >-
+                                            The basis points associated with this
+                                            price tier in decimal format
                                         totalAmount:
                                           type: number
                                           minimum: 0
@@ -821,6 +862,8 @@ paths:
                                         - to
                                         - packageSize
                                         - price
+                                        - fixedPrice
+                                        - basisPoints
                                         - totalAmount
                                         - usage
                                     description: List of price tiers for this metric.
@@ -832,11 +875,12 @@ paths:
                                   - id
                                   - resourceId
                                   - name
-                                  - aggregation
                                   - fixedAmount
+                                  - minimumAmount
                                   - billingModel
                                   - priceTierDivision
                                   - resourceName
+                                  - resourceType
                                   - priceTiers
                                   - totalAmount
                               - type: object
@@ -873,10 +917,20 @@ paths:
                                     type: number
                                     minimum: 0
                                     description: The fixed cost amount for this metric.
+                                  minimumAmount:
+                                    type: number
+                                    minimum: 0
+                                    description: The minimum cost amount for this metric.
                                   resourceName:
                                     type: string
                                     minLength: 1
                                     description: The name of the resource.
+                                  resourceType:
+                                    type: string
+                                    enum:
+                                      - unit
+                                      - currency
+                                    description: The resource type.
                                   totalAmount:
                                     type: number
                                     minimum: 0
@@ -899,6 +953,7 @@ paths:
                                             - unit
                                             - package
                                             - flat
+                                            - basis_points
                                           description: The billing type for this price tier.
                                         from:
                                           type: number
@@ -920,10 +975,25 @@ paths:
                                             billing. Null if not package-based.
                                         price:
                                           type: string
+                                          nullable: true
                                           pattern: ^\d+(\.\d{1,6})?$
                                           description: >-
                                             The price for this tier in decimal
                                             format.
+                                        fixedPrice:
+                                          type: string
+                                          nullable: true
+                                          pattern: ^\d+(\.\d{1,6})?$
+                                          description: >-
+                                            The fixed price for this tier in decimal
+                                            format.
+                                        basisPoints:
+                                          type: number
+                                          nullable: true
+                                          minimum: 1
+                                          description: >-
+                                            The basis points associated with this
+                                            price tier in decimal format
                                       required:
                                         - id
                                         - billingType
@@ -931,6 +1001,8 @@ paths:
                                         - to
                                         - packageSize
                                         - price
+                                        - fixedPrice
+                                        - basisPoints
                                     description: >-
                                       List of price tiers for this prorated
                                       metric.
@@ -978,9 +1050,11 @@ paths:
                                   - resourceId
                                   - name
                                   - fixedAmount
+                                  - minimumAmount
                                   - billingModel
                                   - priceTierDivision
                                   - resourceName
+                                  - resourceType
                                   - totalAmount
                           minItems: 1
                           description: List of metrics associated with this plan.
@@ -996,9 +1070,14 @@ paths:
                               type: number
                               minimum: 0
                               description: The fixed cost amount for this plan.
+                            minimumAmount:
+                              type: number
+                              minimum: 0
+                              description: The minimum cost amount for this plan.
                           required:
                             - id
                             - fixedAmount
+                            - minimumAmount
                         totalAmount:
                           type: number
                           minimum: 0
@@ -1288,6 +1367,19 @@ paths:
                         - dueOffsetDays
                       additionalProperties: false
                       nullable: true
+                    billingSettings:
+                      type: object
+                      properties:
+                        billingCycleMinimumAmount:
+                          type: number
+                          minimum: 0
+                          description: Minimum amount to be charged in a billing cycle.
+                      required:
+                        - billingCycleMinimumAmount
+                      additionalProperties: false
+                      description: >-
+                        Optional billing settings. If not provided, minimum
+                        amount will be set to zero.
                   required:
                     - startDate
                     - endDate
@@ -1408,6 +1500,17 @@ paths:
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
+                      billingSettings:
+                        type: object
+                        properties:
+                          billingCycleMinimumAmount:
+                            type: number
+                            minimum: 0
+                            description: Minimum amount to be charged in a billing cycle.
+                        required:
+                          - billingCycleMinimumAmount
+                        additionalProperties: false
+                        description: Contract billing settings.
                     required:
                       - id
                       - startDate
@@ -1416,6 +1519,7 @@ paths:
                       - status
                       - plans
                       - paymentSettings
+                      - billingSettings
                     additionalProperties: false
                   customer:
                     type: object
@@ -1788,6 +1892,19 @@ paths:
                         - dueOffsetDays
                       additionalProperties: false
                       nullable: true
+                    billingSettings:
+                      type: object
+                      properties:
+                        billingCycleMinimumAmount:
+                          type: number
+                          minimum: 0
+                          description: Minimum amount to be charged in a billing cycle.
+                      required:
+                        - billingCycleMinimumAmount
+                      additionalProperties: false
+                      description: >-
+                        Optional billing settings. If not provided, minimum
+                        amount will be set to zero.
                   required:
                     - startDate
                     - endDate
@@ -1914,6 +2031,17 @@ paths:
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
+                      billingSettings:
+                        type: object
+                        properties:
+                          billingCycleMinimumAmount:
+                            type: number
+                            minimum: 0
+                            description: Minimum amount to be charged in a billing cycle.
+                        required:
+                          - billingCycleMinimumAmount
+                        additionalProperties: false
+                        description: Contract billing settings.
                     required:
                       - id
                       - startDate
@@ -1922,6 +2050,7 @@ paths:
                       - status
                       - plans
                       - paymentSettings
+                      - billingSettings
                     additionalProperties: false
                   customer:
                     type: object
@@ -2188,6 +2317,17 @@ paths:
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
+                      billingSettings:
+                        type: object
+                        properties:
+                          billingCycleMinimumAmount:
+                            type: number
+                            minimum: 0
+                            description: Minimum amount to be charged in a billing cycle.
+                        required:
+                          - billingCycleMinimumAmount
+                        additionalProperties: false
+                        description: Contract billing settings.
                     required:
                       - id
                       - startDate
@@ -2196,6 +2336,7 @@ paths:
                       - status
                       - plans
                       - paymentSettings
+                      - billingSettings
                     additionalProperties: false
                   customer:
                     type: object
@@ -2458,6 +2599,17 @@ paths:
                           - dueOffsetDays
                         additionalProperties: false
                         nullable: true
+                      billingSettings:
+                        type: object
+                        properties:
+                          billingCycleMinimumAmount:
+                            type: number
+                            minimum: 0
+                            description: Minimum amount to be charged in a billing cycle.
+                        required:
+                          - billingCycleMinimumAmount
+                        additionalProperties: false
+                        description: Contract billing settings.
                     required:
                       - id
                       - startDate
@@ -2466,6 +2618,7 @@ paths:
                       - status
                       - plans
                       - paymentSettings
+                      - billingSettings
                     additionalProperties: false
                   customer:
                     type: object
@@ -2628,79 +2781,5 @@ paths:
             application/json:
               schema:
                 description: Contract not found.
-  /v1/resources/:
-    post:
-      summary: Create Resource
-      tags:
-        - Resources
-      description: >-
-        This endpoint allows for the creation of a resource used in customer billing.
-        Each resource is defined by a name and an external identifier. Upon successful
-        creation, a unique UUID for the resource is returned.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                description: Schema defining a resource.
-                properties:
-                  resourceExternalId:
-                    type: string
-                    minLength: 1
-                    description: External identifier of the resource.
-                  name:
-                    type: string
-                    minLength: 1
-                    description: The name of the resource.
-               
-                required:
-                  - resourceExternalId
-                  - name
-                additionalProperties: false
-              minItems: 1
-              description: >-
-                An object representing a resource, including its name and externalId.
-                Both fields are required and must be non-empty strings.
-      x-expose-in-openapi: true
-      responses:
-        '204':
-          description: >-
-            The request was successfully processed and the events were recorded.
-            No content is returned.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                    description: The unique identifier of the resource.
-                  resourceExternalId:
-                    type: string
-                    format: uuid
-                    description: The external identifier of the resource.
-                  name:
-                    type: string
-                    format: uuid
-                    description: The name of the resource.
-                required:
-                    - id
-                    - resourceExternalId
-                    - name
-                additionalProperties: false
-
-
-        '400':
-          description: >-
-            Invalid request due to the external ID belonging to a different
-            resource, or duplication found within the array of resource IDs.
-          content:
-            application/json:
-              schema:
-                description: >-
-                  Invalid request due to the external ID belonging to a
-                  different resource, or duplication found within the array of
-                  resource IDs.
+security:
+  - ApiKey: []
