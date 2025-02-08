@@ -40,7 +40,8 @@
             "pages": [
                 "introduction",
                 "api-reference",
-                "api-reference/webhooks"
+                "api-reference/webhooks",
+                "api-reference/error-responses"
             ]
         }
     ],
