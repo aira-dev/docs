@@ -44,7 +44,6 @@
         {
             "group": "API Documentation",
             "pages": [
-                "api-reference",
                 "api-reference/webhooks",
                 "api-reference/error-responses"
             ]
