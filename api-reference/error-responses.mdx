@@ -26,19 +26,19 @@ When an API request fails, the response will contain details about what went wro
 }
 ```
 
-| Field        | Type         | Description                                                                                                                                                |
-| ------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `message`    | string       | A human-readable description of the error                                                                                                                  |
-| `code`       | string       | A unique identifier for the type of error                                                                                                                  |
-| `details`    | object       | Additional context about the error, such as invalid fields or constraints. Each endpoint may include specific error details in their documentation         |
-| `causations` | array<Error> | Optional array of error objects following the same structure as the parent error. Only present when there's a meaningful chain of related errors to expose |
+| Field | Type | Description |
+| --- | --- | --- |
+| `message` | string | A human-readable description of the error |
+| `code` | string | A unique identifier for the type of error |
+| `details` | object or array | Additional context about the error, such as invalid fields or constraints. Each endpoint may include specific error details in their documentation |
+| `causations` | array of error | Optional array of error objects following the same structure as the parent error. Only present when there's a meaningful chain of related errors to expose |
 
 ## HTTP Status Codes
 
-| Status Code | Description                                                                                 |
-| ----------- | ------------------------------------------------------------------------------------------- |
-| 400         | Bad Request - The request was malformed or contains invalid parameters                      |
-| 401         | Unauthorized - Authentication is required or the provided credentials are invalid           |
-| 403         | Forbidden - The authenticated user doesn't have permission to access the requested resource |
-| 404         | Not Found - The requested resource doesn't exist                                            |
-| 500         | Internal Server Error - Something went wrong on our end                                     |
+| Status Code | Description |
+| --- | --- |
+| 400 | Bad Request - The request was malformed or contains invalid parameters |
+| 401 | Unauthorized - Authentication is required or the provided credentials are invalid |
+| 403 | Forbidden - The authenticated user doesn't have permission to access the requested resource |
+| 404 | Not Found - The requested resource doesn't exist |
+| 500 | Internal Server Error - Something went wrong on our end |
