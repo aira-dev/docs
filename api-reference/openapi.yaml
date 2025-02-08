@@ -109,6 +109,8 @@ paths:
                 description: >-
                   The request was successfully processed and the events were
                   recorded. No content is returned.
+                additionalProperties: false
+                type: object
         '400':
           description: >-
             Invalid request due to incorrect data or all events could not be
