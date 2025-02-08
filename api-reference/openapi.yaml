@@ -32,9 +32,7 @@ paths:
           application/json:
             schema:
               type: object
-              description: >-
-                Events ingestion request, which includes an array of events to
-                be ingested.
+              description: An object containing an array of events to be ingested.
               properties:
                 events:
                   description: >-
@@ -98,9 +96,7 @@ paths:
                 - events
               additionalProperties: false
         required: true
-        description: >-
-          Events ingestion request, which includes an array of events to be
-          ingested.
+        description: An object containing an array of events to be ingested.
       x-expose-in-openapi: true
       responses:
         '204':
@@ -122,11 +118,55 @@ paths:
           content:
             application/json:
               schema:
+                type: object
                 description: >-
                   Invalid request due to incorrect data or all events could not
                   be processed successfully, so none have been recorded. This
                   response includes details on which events failed and why, to
                   aid in correcting and resubmitting the events.
+                properties:
+                  message:
+                    type: string
+                    description: >-
+                      Human-readable error message explaining why the ingestion
+                      failed.
+                  code:
+                    type: string
+                    description: Error code identifying the type of failure.
+                  details:
+                    type: array
+                    description: List of failed events and their specific errors.
+                    items:
+                      type: object
+                      properties:
+                        idempotencyKey:
+                          type: string
+                          description: The idempotency key of the failed event.
+                        errors:
+                          type: array
+                          description: List of errors associated with this event.
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Specific error code for this failure.
+                                enum:
+                                  - failed_to_create_events
+                                  - future_occurred_at
+                                  - duplicated_idempotency_key
+                                  - failed_on_previous_event_creation
+                              message:
+                                type: string
+                                description: Human-readable error message.
+                            required:
+                              - code
+                              - message
+                      additionalProperties: true
+                required:
+                  - message
+                  - code
+                additionalProperties: false
   /v1/invoices/:
     get:
       summary: List Invoices
