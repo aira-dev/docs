@@ -152,7 +152,6 @@ paths:
                                 type: string
                                 description: Specific error code for this failure.
                                 enum:
-                                  - failed_to_create_events
                                   - future_occurred_at
                                   - duplicated_idempotency_key
                                   - failed_on_previous_event_creation
@@ -488,6 +487,56 @@ paths:
                 description: >-
                   The request was successfully processed and the list of
                   invoices is returned.
+        '400':
+          description: Error object returned to the client.
+          content:
+            application/json:
+              schema:
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
   /v1/invoices/{id}:
     get:
       summary: Get Invoice
@@ -1186,6 +1235,56 @@ paths:
                 description: >-
                   The request was successfully processed and the invoice is
                   returned.
+        '400':
+          description: Error object returned to the client.
+          content:
+            application/json:
+              schema:
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
         '404':
           description: The invoice was not found.
           content:
@@ -1711,17 +1810,55 @@ paths:
                   been created. As well as new customer and/or a new payment
                   account if they were part of the request.
         '400':
-          description: >-
-            Invalid request due to the external ID belonging to a different
-            customer, tax ID belongs to another payment account or duplication
-            found within the array of plan IDs.
+          description: Error object returned to the client.
           content:
             application/json:
               schema:
-                description: >-
-                  Invalid request due to the external ID belonging to a
-                  different customer, tax ID belongs to another payment account
-                  or duplication found within the array of plan IDs.
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
         '401':
           description: Existing ID and new entity cannot be provided together.
           content:
@@ -2242,11 +2379,55 @@ paths:
                   been updated. The response contains the details of the updated
                   contract.
         '400':
-          description: Invalid request.
+          description: Error object returned to the client.
           content:
             application/json:
               schema:
-                description: Invalid request.
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
         '404':
           description: Contract not found.
           content:
@@ -2526,6 +2707,56 @@ paths:
                 description: >-
                   The request was successfully processed and the contract
                   information is returned.
+        '400':
+          description: Error object returned to the client.
+          content:
+            application/json:
+              schema:
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
         '404':
           description: Contract not found.
           content:
@@ -2810,11 +3041,55 @@ paths:
                   been canceled. The response contains the details of the
                   canceled contract.
         '400':
-          description: Contract must be active.
+          description: Error object returned to the client.
           content:
             application/json:
               schema:
-                description: Contract must be active.
+                description: Error object returned to the client.
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A human-readable description of the error
+                  code:
+                    type: string
+                    description: A unique identifier for the type of error
+                  details:
+                    oneOf:
+                      - type: object
+                      - type: array
+                    description: >-
+                      Additional context about the error, such as invalid fields
+                      or constraints. Each endpoint may include specific error
+                      details in their documentation
+                  causations:
+                    type: array
+                    description: >-
+                      Optional array of error objects following the same
+                      structure as the parent error. Only present when there's a
+                      meaningful chain of related errors to expose
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: >-
+                            A human-readable description of the underlying error
+                            cause
+                        code:
+                          type: string
+                          description: A unique identifier for the type of underlying error
+                        details:
+                          type: object
+                          description: Additional context about the underlying error
+                      required:
+                        - message
+                        - code
+                      additionalProperties: false
+                required:
+                  - code
+                  - message
+                additionalProperties: false
         '404':
           description: Contract not found.
           content:
