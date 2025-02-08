@@ -1,0 +1,44 @@
+---
+title: "Error responses"
+---
+
+## Overview
+
+When an API request fails, the response will contain details about what went wrong. All error responses follow a consistent format to help you debug and handle errors appropriately.
+
+### Error Response Structure
+
+```json
+{
+  "message": "A human-readable error message",
+  "code": "error_code",
+  "details": {
+    "field1": "Additional error context",
+    "field2": "More specific details"
+  },
+  "causations": [
+    {
+      "message": "Underlying error cause",
+      "code": "cause_code",
+      "details": {}
+    }
+  ]
+}
+```
+
+| Field        | Type         | Description                                                                                                                                                |
+| ------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `message`    | string       | A human-readable description of the error                                                                                                                  |
+| `code`       | string       | A unique identifier for the type of error                                                                                                                  |
+| `details`    | object       | Additional context about the error, such as invalid fields or constraints. Each endpoint may include specific error details in their documentation         |
+| `causations` | array<Error> | Optional array of error objects following the same structure as the parent error. Only present when there's a meaningful chain of related errors to expose |
+
+## HTTP Status Codes
+
+| Status Code | Description                                                                                 |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| 400         | Bad Request - The request was malformed or contains invalid parameters                      |
+| 401         | Unauthorized - Authentication is required or the provided credentials are invalid           |
+| 403         | Forbidden - The authenticated user doesn't have permission to access the requested resource |
+| 404         | Not Found - The requested resource doesn't exist                                            |
+| 500         | Internal Server Error - Something went wrong on our end                                     |

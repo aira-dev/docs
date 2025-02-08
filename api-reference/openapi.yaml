@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Aira - Documentação API
+  title: API Reference
   version: '1.0'
-  description: Aira Billing API
+  description: Aira API Reference
   x-logo:
     url: https://static.useaira.com/images/airalogo.svg
     backgroundColor: '#FFFFFF'

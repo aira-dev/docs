@@ -1,5 +1,5 @@
 ---
-title: "Webhook Documentation"
+title: "Webhooks"
 ---
 
 ## Overview
@@ -50,11 +50,11 @@ When an event occurs, the webhook request body is structured as follows:
 }
 ```
 
-* **`id`**: A unique identifier (UUID) for the webhook event.
+- **`id`**: A unique identifier (UUID) for the webhook event.
 
-* **`event`**: The event type, such as `payment.status-updated` or `invoice.status-updated`.
+- **`event`**: The event type, such as `payment.status-updated` or `invoice.status-updated`.
 
-* **`payload`**: An object containing the event-specific data (described below).
+- **`payload`**: An object containing the event-specific data (described below).
 
 The `X-Webhook-Token` header is included separately from the JSON payload.
 
@@ -166,19 +166,19 @@ This event is triggered when an invoice’s status changes. The payload provides
 
 ## Enumerations
 
-* **PaymentStatus**: `created`, `pending`, `paid`, `failed`, `canceled`, `expired`
+- **PaymentStatus**: `created`, `pending`, `paid`, `failed`, `canceled`, `expired`
 
-* **PaymentMethod**: `bolepix`
+- **PaymentMethod**: `bolepix`
 
-* **BillingCycleStatus**: `open`, `closed`, `paid`, `canceled`
+- **BillingCycleStatus**: `open`, `closed`, `paid`, `canceled`
 
-* **BillingCycleClosedReason**: `end_of_cycle`, `billing_end_day_updated`
+- **BillingCycleClosedReason**: `end_of_cycle`, `billing_end_day_updated`
 
-* **ExternalProcessorSyncBillingCycleStatus**: `not_applicable`, `not_initiated`, `pending`, `success`, `failed`
+- **ExternalProcessorSyncBillingCycleStatus**: `not_applicable`, `not_initiated`, `pending`, `success`, `failed`
 
-* **State**: `AC`, `AL`, `AP`, `AM`, `BA`, `CE`, `DF`, `ES`, `GO`, `MA`, `MT`, `MS`, `MG`, `PA`, `PB`, `PR`, `PE`, `PI`, `RJ`, `RN`, `RS`, `RO`, `RR`, `SC`, `SP`, `SE`, `TO`
+- **State**: `AC`, `AL`, `AP`, `AM`, `BA`, `CE`, `DF`, `ES`, `GO`, `MA`, `MT`, `MS`, `MG`, `PA`, `PB`, `PR`, `PE`, `PI`, `RJ`, `RN`, `RS`, `RO`, `RR`, `SC`, `SP`, `SE`, `TO`
 
-* **Country**: `Brasil`
+- **Country**: `Brasil`
 
 ## Verifying Webhooks
 
