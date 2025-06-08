@@ -16,6 +16,300 @@ components:
       in: header
   schemas: {}
 paths:
+  /v1/customers/:
+    post:
+      summary: Create a Customer
+      tags:
+        - Customers
+      description: This endpoint allows the creation of a new customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Schema representing a customer.
+              properties:
+                externalId:
+                  type: string
+                  minLength: 1
+                  pattern: ^\S+$
+                  description: External identifier for the customer.
+                name:
+                  type: string
+                  minLength: 1
+                  description: The name of the customer.
+              required:
+                - externalId
+                - name
+              additionalProperties: false
+        required: true
+        description: Schema representing a customer.
+      x-expose-in-openapi: true
+      responses:
+        '201':
+          description: >-
+            The request was successfully processed, and the customer has been
+            created. The response contains the details of the newly created
+            customer.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >-
+                  The request was successfully processed, and the customer has
+                  been created. The response contains the details of the newly
+                  created customer.
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The unique identifier of the customer.
+                  externalId:
+                    type: string
+                    minLength: 1
+                    pattern: ^\S+$
+                    description: External identifier for the customer.
+                  name:
+                    type: string
+                    minLength: 1
+                    description: The name of the customer.
+                required:
+                  - id
+                  - externalId
+                  - name
+                additionalProperties: false
+        '400':
+          description: >-
+            Invalid request due to the external id belonging to a different
+            customer or duplication found within the array of plan ids.
+          content:
+            application/json:
+              schema:
+                description: >-
+                  Invalid request due to the external id belonging to a
+                  different customer or duplication found within the array of
+                  plan ids.
+    get:
+      summary: Get Customers
+      tags:
+        - Customers
+      description: This endpoint allows the retrieval of all customers.
+      parameters:
+        - schema:
+            type: number
+            default: 100
+            minimum: 1
+            maximum: 100
+          in: query
+          name: limit
+          required: true
+        - schema:
+            type: number
+            default: 0
+            minimum: 0
+          in: query
+          name: offset
+          required: false
+        - schema:
+            type: string
+          in: query
+          name: search
+          required: false
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      description: Schema representing a customer.
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The unique identifier of the customer.
+                        externalId:
+                          type: string
+                          minLength: 1
+                          pattern: ^\S+$
+                          description: External identifier for the customer.
+                        name:
+                          type: string
+                          minLength: 1
+                          description: The name of the customer.
+                      required:
+                        - id
+                        - externalId
+                        - name
+                      additionalProperties: false
+                  hasMore:
+                    type: boolean
+                required:
+                  - items
+                  - hasMore
+                additionalProperties: false
+  /v1/customers/{id}:
+    delete:
+      summary: Delete a Customer
+      tags:
+        - Customers
+      description: This endpoint allows the delete of a customer.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: path
+          name: id
+          required: true
+      x-expose-in-openapi: true
+      responses:
+        '204':
+          description: The request was successfully processed and the customer was deleted.
+          content:
+            application/json:
+              schema:
+                description: >-
+                  The request was successfully processed and the customer was
+                  deleted.
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
+    put:
+      summary: Update a Customer
+      tags:
+        - Customers
+      description: This endpoint allows the update of a customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Schema representing a customer.
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: The name of the customer.
+              required:
+                - name
+              additionalProperties: false
+        required: true
+        description: Schema representing a customer.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: path
+          name: id
+          required: true
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: >-
+            The request was successfully processed, and the customer has been
+            updated. The response contains the details of the updated customer.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >-
+                  The request was successfully processed, and the customer has
+                  been updated. The response contains the details of the updated
+                  customer.
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The unique identifier of the customer.
+                  externalId:
+                    type: string
+                    minLength: 1
+                    pattern: ^\S+$
+                    description: External identifier for the customer.
+                  name:
+                    type: string
+                    minLength: 1
+                    description: The name of the customer.
+                required:
+                  - id
+                  - externalId
+                  - name
+                additionalProperties: false
+        '400':
+          description: >-
+            Invalid request due to the external id belonging to a different
+            customer.
+          content:
+            application/json:
+              schema:
+                description: >-
+                  Invalid request due to the external id belonging to a
+                  different customer.
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
+    get:
+      summary: Get a Customer
+      tags:
+        - Customers
+      description: This endpoint provides access to detailed information about a customer.
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: path
+          name: id
+          required: true
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: >-
+            The request was successfully processed and the customer information
+            is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >-
+                  The request was successfully processed and the customer
+                  information is returned.
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The unique identifier of the customer.
+                  externalId:
+                    type: string
+                    minLength: 1
+                    pattern: ^\S+$
+                    description: External identifier for the customer.
+                  name:
+                    type: string
+                    minLength: 1
+                    description: The name of the customer.
+                required:
+                  - id
+                  - externalId
+                  - name
+                additionalProperties: false
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
   /v1/events/ingest:
     post:
       summary: Ingest Events
@@ -92,6 +386,7 @@ paths:
                       - occurredAt
                     additionalProperties: false
                   minItems: 1
+                  maxItems: 1000
               required:
                 - events
               additionalProperties: false
@@ -263,6 +558,7 @@ paths:
                         externalId:
                           type: string
                           minLength: 1
+                          pattern: ^\S+$
                           description: External identifier for the customer.
                         name:
                           type: string
@@ -411,6 +707,7 @@ paths:
                       enum:
                         - end_of_cycle
                         - billing_end_day_updated
+                      nullable: true
                       description: The reason why the billing cycle was closed.
                     payments:
                       type: array
@@ -484,6 +781,7 @@ paths:
                     - startDate
                     - endDate
                     - totalAmount
+                    - closedReason
                     - status
                   additionalProperties: false
                 description: >-
@@ -583,6 +881,7 @@ paths:
                       externalId:
                         type: string
                         minLength: 1
+                        pattern: ^\S+$
                         description: External identifier for the customer.
                       name:
                         type: string
@@ -729,6 +1028,7 @@ paths:
                     enum:
                       - end_of_cycle
                       - billing_end_day_updated
+                    nullable: true
                     description: The reason why the billing cycle was closed.
                   payments:
                     type: array
@@ -797,7 +1097,7 @@ paths:
                     type: array
                     items:
                       type: object
-                      description: Extended plan schema with product, metrics and settings.
+                      description: Plan schema defining core plan properties.
                       properties:
                         id:
                           type: string
@@ -811,6 +1111,10 @@ paths:
                           type: string
                           nullable: true
                           description: Optional description of the plan.
+                        productId:
+                          type: string
+                          format: uuid
+                          description: The ID of the product this plan is associated with.
                         product:
                           type: object
                           description: The product associated with this plan.
@@ -827,6 +1131,26 @@ paths:
                             - id
                             - name
                           additionalProperties: false
+                        planSettings:
+                          type: object
+                          description: Settings configuration for this plan.
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                              description: The plan settings id.
+                            fixedAmount:
+                              type: number
+                              minimum: 0
+                              description: The fixed cost amount for this plan.
+                            minimumAmount:
+                              type: number
+                              minimum: 0
+                              description: The minimum cost amount for this plan.
+                          required:
+                            - id
+                            - fixedAmount
+                            - minimumAmount
                         metrics:
                           type: array
                           items:
@@ -843,6 +1167,12 @@ paths:
                                     format: uuid
                                     description: >-
                                       The ID of the resource this metric is
+                                      associated with.
+                                  currencyUnitId:
+                                    type: string
+                                    format: uuid
+                                    description: >-
+                                      The ID of the currency unit this metric is
                                       associated with.
                                   name:
                                     type: string
@@ -879,6 +1209,20 @@ paths:
                                       - unit
                                       - currency
                                     description: The resource type.
+                                  currencyUnit:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      name:
+                                        type: string
+                                      code:
+                                        type: string
+                                    required:
+                                      - id
+                                      - name
+                                      - code
+                                    additionalProperties: false
                                   priceTiers:
                                     type: array
                                     items:
@@ -934,10 +1278,10 @@ paths:
                                         basisPoints:
                                           type: number
                                           nullable: true
-                                          minimum: 1
                                           description: >-
                                             The basis points associated with this
                                             price tier in decimal format
+                                          minimum: 0
                                         totalAmount:
                                           type: number
                                           minimum: 0
@@ -965,6 +1309,7 @@ paths:
                                 required:
                                   - id
                                   - resourceId
+                                  - currencyUnitId
                                   - name
                                   - fixedAmount
                                   - minimumAmount
@@ -986,6 +1331,12 @@ paths:
                                     format: uuid
                                     description: >-
                                       The ID of the resource this metric is
+                                      associated with.
+                                  currencyUnitId:
+                                    type: string
+                                    format: uuid
+                                    description: >-
+                                      The ID of the currency unit this metric is
                                       associated with.
                                   name:
                                     type: string
@@ -1022,6 +1373,20 @@ paths:
                                       - unit
                                       - currency
                                     description: The resource type.
+                                  currencyUnit:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      name:
+                                        type: string
+                                      code:
+                                        type: string
+                                    required:
+                                      - id
+                                      - name
+                                      - code
+                                    additionalProperties: false
                                   totalAmount:
                                     type: number
                                     minimum: 0
@@ -1081,10 +1446,10 @@ paths:
                                         basisPoints:
                                           type: number
                                           nullable: true
-                                          minimum: 1
                                           description: >-
                                             The basis points associated with this
                                             price tier in decimal format
+                                          minimum: 0
                                       required:
                                         - id
                                         - billingType
@@ -1139,6 +1504,7 @@ paths:
                                 required:
                                   - id
                                   - resourceId
+                                  - currencyUnitId
                                   - name
                                   - fixedAmount
                                   - minimumAmount
@@ -1147,28 +1513,10 @@ paths:
                                   - resourceName
                                   - resourceType
                                   - totalAmount
+                                  - priceTiers
+                                  - prorationMetricBillings
                           minItems: 1
                           description: List of metrics associated with this plan.
-                        planSettings:
-                          type: object
-                          description: Settings configuration for this plan.
-                          properties:
-                            id:
-                              type: string
-                              format: uuid
-                              description: The plan settings id.
-                            fixedAmount:
-                              type: number
-                              minimum: 0
-                              description: The fixed cost amount for this plan.
-                            minimumAmount:
-                              type: number
-                              minimum: 0
-                              description: The minimum cost amount for this plan.
-                          required:
-                            - id
-                            - fixedAmount
-                            - minimumAmount
                         totalAmount:
                           type: number
                           minimum: 0
@@ -1177,10 +1525,9 @@ paths:
                         - id
                         - name
                         - description
-                        - metrics
-                        - product
-                        - planSettings
+                        - productId
                         - totalAmount
+                        - planSettings
                       additionalProperties: false
                     minItems: 1
                     description: List of plans associated with this invoice.
@@ -1230,6 +1577,7 @@ paths:
                   - startDate
                   - endDate
                   - totalAmount
+                  - closedReason
                   - status
                   - plans
                   - additionalItems
@@ -1316,6 +1664,7 @@ paths:
                     externalId:
                       type: string
                       minLength: 1
+                      pattern: ^\S+$
                       description: External identifier for the customer.
                     name:
                       type: string
@@ -1673,6 +2022,7 @@ paths:
                       externalId:
                         type: string
                         minLength: 1
+                        pattern: ^\S+$
                         description: External identifier for the customer.
                       name:
                         type: string
@@ -2242,6 +2592,7 @@ paths:
                       externalId:
                         type: string
                         minLength: 1
+                        pattern: ^\S+$
                         description: External identifier for the customer.
                       name:
                         type: string
@@ -2572,6 +2923,7 @@ paths:
                       externalId:
                         type: string
                         minLength: 1
+                        pattern: ^\S+$
                         description: External identifier for the customer.
                       name:
                         type: string
@@ -2904,6 +3256,7 @@ paths:
                       externalId:
                         type: string
                         minLength: 1
+                        pattern: ^\S+$
                         description: External identifier for the customer.
                       name:
                         type: string
