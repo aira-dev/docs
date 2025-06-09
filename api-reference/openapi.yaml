@@ -30,14 +30,17 @@ paths:
               description: Schema representing a customer.
               properties:
                 externalId:
+                  description: >-
+                    An optional external identifier of the customer from the
+                    external system, used throughout the system to identify the
+                    customer. This field can not be updated.
                   type: string
                   minLength: 1
-                  pattern: ^\S+$
-                  description: External identifier for the customer.
+                  pattern: ^[a-zA-Z0-9-_]+$
                 name:
+                  description: The name of the customer.
                   type: string
                   minLength: 1
-                  description: The name of the customer.
               required:
                 - externalId
                 - name
@@ -61,18 +64,21 @@ paths:
                   created customer.
                 properties:
                   id:
+                    description: The unique identifier of the customer in our system.
                     type: string
-                    format: uuid
-                    description: The unique identifier of the customer.
+                    minLength: 1
                   externalId:
+                    description: >-
+                      An optional external identifier of the customer from the
+                      external system, used throughout the system to identify
+                      the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^\S+$
-                    description: External identifier for the customer.
+                    pattern: ^[a-zA-Z0-9-_]+$
                   name:
+                    description: The name of the customer.
                     type: string
                     minLength: 1
-                    description: The name of the customer.
                 required:
                   - id
                   - externalId
@@ -103,6 +109,7 @@ paths:
           in: query
           name: limit
           required: true
+          description: The maximum number of customers to fetch.
         - schema:
             type: number
             default: 0
@@ -110,11 +117,13 @@ paths:
           in: query
           name: offset
           required: false
+          description: The offset to start fetching customers from.
         - schema:
             type: string
           in: query
           name: search
           required: false
+          description: A search query to filter customers by name or externalId.
       x-expose-in-openapi: true
       responses:
         '200':
@@ -131,25 +140,31 @@ paths:
                       description: Schema representing a customer.
                       properties:
                         id:
+                          description: The unique identifier of the customer in our system.
                           type: string
-                          format: uuid
-                          description: The unique identifier of the customer.
+                          minLength: 1
                         externalId:
+                          description: >-
+                            An optional external identifier of the customer from
+                            the external system, used throughout the system to
+                            identify the customer. This field can not be
+                            updated.
                           type: string
                           minLength: 1
-                          pattern: ^\S+$
-                          description: External identifier for the customer.
+                          pattern: ^[a-zA-Z0-9-_]+$
                         name:
+                          description: The name of the customer.
                           type: string
                           minLength: 1
-                          description: The name of the customer.
                       required:
                         - id
                         - externalId
                         - name
                       additionalProperties: false
+                    description: A list of customers.
                   hasMore:
                     type: boolean
+                    description: Indicates if there are more customers to fetch.
                 required:
                   - items
                   - hasMore
@@ -159,14 +174,15 @@ paths:
       summary: Delete a Customer
       tags:
         - Customers
-      description: This endpoint allows the delete of a customer.
+      description: This endpoint allows deleting a customer by id.
       parameters:
         - schema:
             type: string
-            format: uuid
+            minLength: 1
           in: path
           name: id
           required: true
+          description: The unique identifier of the customer in our system.
       x-expose-in-openapi: true
       responses:
         '204':
@@ -196,9 +212,9 @@ paths:
               description: Schema representing a customer.
               properties:
                 name:
+                  description: The name of the customer.
                   type: string
                   minLength: 1
-                  description: The name of the customer.
               required:
                 - name
               additionalProperties: false
@@ -207,10 +223,11 @@ paths:
       parameters:
         - schema:
             type: string
-            format: uuid
+            minLength: 1
           in: path
           name: id
           required: true
+          description: The unique identifier of the customer in our system.
       x-expose-in-openapi: true
       responses:
         '200':
@@ -227,33 +244,26 @@ paths:
                   customer.
                 properties:
                   id:
+                    description: The unique identifier of the customer in our system.
                     type: string
-                    format: uuid
-                    description: The unique identifier of the customer.
+                    minLength: 1
                   externalId:
+                    description: >-
+                      An optional external identifier of the customer from the
+                      external system, used throughout the system to identify
+                      the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^\S+$
-                    description: External identifier for the customer.
+                    pattern: ^[a-zA-Z0-9-_]+$
                   name:
+                    description: The name of the customer.
                     type: string
                     minLength: 1
-                    description: The name of the customer.
                 required:
                   - id
                   - externalId
                   - name
                 additionalProperties: false
-        '400':
-          description: >-
-            Invalid request due to the external id belonging to a different
-            customer.
-          content:
-            application/json:
-              schema:
-                description: >-
-                  Invalid request due to the external id belonging to a
-                  different customer.
         '404':
           description: Customer not found.
           content:
@@ -264,14 +274,17 @@ paths:
       summary: Get a Customer
       tags:
         - Customers
-      description: This endpoint provides access to detailed information about a customer.
+      description: >-
+        This endpoint provides access to detailed information about a customer
+        by their id.
       parameters:
         - schema:
             type: string
-            format: uuid
+            minLength: 1
           in: path
           name: id
           required: true
+          description: The unique identifier of the customer in our system.
       x-expose-in-openapi: true
       responses:
         '200':
@@ -287,18 +300,190 @@ paths:
                   information is returned.
                 properties:
                   id:
+                    description: The unique identifier of the customer in our system.
                     type: string
-                    format: uuid
-                    description: The unique identifier of the customer.
+                    minLength: 1
                   externalId:
+                    description: >-
+                      An optional external identifier of the customer from the
+                      external system, used throughout the system to identify
+                      the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^\S+$
-                    description: External identifier for the customer.
+                    pattern: ^[a-zA-Z0-9-_]+$
                   name:
+                    description: The name of the customer.
                     type: string
                     minLength: 1
+                required:
+                  - id
+                  - externalId
+                  - name
+                additionalProperties: false
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
+  /v1/customers/by-external-id/{externalId}:
+    delete:
+      summary: Delete a Customer by their external id
+      tags:
+        - Customers
+      description: This endpoint allows deleting a customer by external id.
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+            pattern: ^[a-zA-Z0-9-_]+$
+          in: path
+          name: externalId
+          required: true
+          description: >-
+            An optional external identifier of the customer from the external
+            system, used throughout the system to identify the customer. This
+            field can not be updated.
+      x-expose-in-openapi: true
+      responses:
+        '204':
+          description: The request was successfully processed and the customer was deleted.
+          content:
+            application/json:
+              schema:
+                description: >-
+                  The request was successfully processed and the customer was
+                  deleted.
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
+    put:
+      summary: Update a Customer by their external id
+      tags:
+        - Customers
+      description: This endpoint allows the update of a customer by their external id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Schema representing a customer.
+              properties:
+                name:
+                  description: The name of the customer.
+                  type: string
+                  minLength: 1
+              required:
+                - name
+              additionalProperties: false
+        required: true
+        description: Schema representing a customer.
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+            pattern: ^[a-zA-Z0-9-_]+$
+          in: path
+          name: externalId
+          required: true
+          description: >-
+            An optional external identifier of the customer from the external
+            system, used throughout the system to identify the customer. This
+            field can not be updated.
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: >-
+            The request was successfully processed, and the customer has been
+            updated. The response contains the details of the updated customer.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >-
+                  The request was successfully processed, and the customer has
+                  been updated. The response contains the details of the updated
+                  customer.
+                properties:
+                  id:
+                    description: The unique identifier of the customer in our system.
+                    type: string
+                    minLength: 1
+                  externalId:
+                    description: >-
+                      An optional external identifier of the customer from the
+                      external system, used throughout the system to identify
+                      the customer. This field can not be updated.
+                    type: string
+                    minLength: 1
+                    pattern: ^[a-zA-Z0-9-_]+$
+                  name:
                     description: The name of the customer.
+                    type: string
+                    minLength: 1
+                required:
+                  - id
+                  - externalId
+                  - name
+                additionalProperties: false
+        '404':
+          description: Customer not found.
+          content:
+            application/json:
+              schema:
+                description: Customer not found.
+    get:
+      summary: Get a Customer by their external id
+      tags:
+        - Customers
+      description: >-
+        This endpoint provides access to detailed information about a customer
+        by their external id.
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+            pattern: ^[a-zA-Z0-9-_]+$
+          in: path
+          name: externalId
+          required: true
+          description: >-
+            An optional external identifier of the customer from the external
+            system, used throughout the system to identify the customer. This
+            field can not be updated.
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: >-
+            The request was successfully processed and the customer information
+            is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >-
+                  The request was successfully processed and the customer
+                  information is returned.
+                properties:
+                  id:
+                    description: The unique identifier of the customer in our system.
+                    type: string
+                    minLength: 1
+                  externalId:
+                    description: >-
+                      An optional external identifier of the customer from the
+                      external system, used throughout the system to identify
+                      the customer. This field can not be updated.
+                    type: string
+                    minLength: 1
+                    pattern: ^[a-zA-Z0-9-_]+$
+                  name:
+                    description: The name of the customer.
+                    type: string
+                    minLength: 1
                 required:
                   - id
                   - externalId
@@ -552,18 +737,22 @@ paths:
                       description: The customer associated with this invoice.
                       properties:
                         id:
+                          description: The unique identifier of the customer in our system.
                           type: string
-                          format: uuid
-                          description: The unique identifier of the customer.
+                          minLength: 1
                         externalId:
+                          description: >-
+                            An optional external identifier of the customer from
+                            the external system, used throughout the system to
+                            identify the customer. This field can not be
+                            updated.
                           type: string
                           minLength: 1
-                          pattern: ^\S+$
-                          description: External identifier for the customer.
+                          pattern: ^[a-zA-Z0-9-_]+$
                         name:
+                          description: The name of the customer.
                           type: string
                           minLength: 1
-                          description: The name of the customer.
                       required:
                         - id
                         - externalId
@@ -875,18 +1064,21 @@ paths:
                     description: The customer associated with this invoice.
                     properties:
                       id:
+                        description: The unique identifier of the customer in our system.
                         type: string
-                        format: uuid
-                        description: The unique identifier of the customer.
+                        minLength: 1
                       externalId:
+                        description: >-
+                          An optional external identifier of the customer from
+                          the external system, used throughout the system to
+                          identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
-                        description: External identifier for the customer.
+                        pattern: ^[a-zA-Z0-9-_]+$
                       name:
+                        description: The name of the customer.
                         type: string
                         minLength: 1
-                        description: The name of the customer.
                     required:
                       - id
                       - externalId
@@ -1662,14 +1854,17 @@ paths:
                   description: New Customer details.
                   properties:
                     externalId:
+                      description: >-
+                        An optional external identifier of the customer from the
+                        external system, used throughout the system to identify
+                        the customer. This field can not be updated.
                       type: string
                       minLength: 1
-                      pattern: ^\S+$
-                      description: External identifier for the customer.
+                      pattern: ^[a-zA-Z0-9-_]+$
                     name:
+                      description: The name of the customer.
                       type: string
                       minLength: 1
-                      description: The name of the customer.
                   required:
                     - externalId
                     - name
@@ -2016,18 +2211,21 @@ paths:
                     description: Schema representing a customer.
                     properties:
                       id:
+                        description: The unique identifier of the customer in our system.
                         type: string
-                        format: uuid
-                        description: The unique identifier of the customer.
+                        minLength: 1
                       externalId:
+                        description: >-
+                          An optional external identifier of the customer from
+                          the external system, used throughout the system to
+                          identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
-                        description: External identifier for the customer.
+                        pattern: ^[a-zA-Z0-9-_]+$
                       name:
+                        description: The name of the customer.
                         type: string
                         minLength: 1
-                        description: The name of the customer.
                     required:
                       - id
                       - externalId
@@ -2586,18 +2784,21 @@ paths:
                     description: Schema representing a customer.
                     properties:
                       id:
+                        description: The unique identifier of the customer in our system.
                         type: string
-                        format: uuid
-                        description: The unique identifier of the customer.
+                        minLength: 1
                       externalId:
+                        description: >-
+                          An optional external identifier of the customer from
+                          the external system, used throughout the system to
+                          identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
-                        description: External identifier for the customer.
+                        pattern: ^[a-zA-Z0-9-_]+$
                       name:
+                        description: The name of the customer.
                         type: string
                         minLength: 1
-                        description: The name of the customer.
                     required:
                       - id
                       - externalId
@@ -2917,18 +3118,21 @@ paths:
                     description: Schema representing a customer.
                     properties:
                       id:
+                        description: The unique identifier of the customer in our system.
                         type: string
-                        format: uuid
-                        description: The unique identifier of the customer.
+                        minLength: 1
                       externalId:
+                        description: >-
+                          An optional external identifier of the customer from
+                          the external system, used throughout the system to
+                          identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
-                        description: External identifier for the customer.
+                        pattern: ^[a-zA-Z0-9-_]+$
                       name:
+                        description: The name of the customer.
                         type: string
                         minLength: 1
-                        description: The name of the customer.
                     required:
                       - id
                       - externalId
@@ -3250,18 +3454,21 @@ paths:
                     description: Schema representing a customer.
                     properties:
                       id:
+                        description: The unique identifier of the customer in our system.
                         type: string
-                        format: uuid
-                        description: The unique identifier of the customer.
+                        minLength: 1
                       externalId:
+                        description: >-
+                          An optional external identifier of the customer from
+                          the external system, used throughout the system to
+                          identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
-                        description: External identifier for the customer.
+                        pattern: ^[a-zA-Z0-9-_]+$
                       name:
+                        description: The name of the customer.
                         type: string
                         minLength: 1
-                        description: The name of the customer.
                     required:
                       - id
                       - externalId
