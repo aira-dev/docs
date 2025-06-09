@@ -18,10 +18,10 @@ components:
 paths:
   /v1/customers/:
     post:
-      summary: Create a Customer
+      summary: Create customer
       tags:
         - Customers
-      description: This endpoint allows the creation of a new customer.
+      description: This endpoint allows creating a new customer.
       requestBody:
         content:
           application/json:
@@ -96,10 +96,10 @@ paths:
                   different customer or duplication found within the array of
                   plan ids.
     get:
-      summary: Get Customers
+      summary: List customers
       tags:
         - Customers
-      description: This endpoint allows the retrieval of all customers.
+      description: This endpoint allows fetching a list of customers.
       parameters:
         - schema:
             type: number
@@ -171,7 +171,7 @@ paths:
                 additionalProperties: false
   /v1/customers/{id}:
     delete:
-      summary: Delete a Customer
+      summary: Delete customer
       tags:
         - Customers
       description: This endpoint allows deleting a customer by id.
@@ -200,10 +200,10 @@ paths:
               schema:
                 description: Customer not found.
     put:
-      summary: Update a Customer
+      summary: Update customer
       tags:
         - Customers
-      description: This endpoint allows the update of a customer.
+      description: This endpoint allows updating a customer by id.
       requestBody:
         content:
           application/json:
@@ -271,12 +271,10 @@ paths:
               schema:
                 description: Customer not found.
     get:
-      summary: Get a Customer
+      summary: Fetch customer
       tags:
         - Customers
-      description: >-
-        This endpoint provides access to detailed information about a customer
-        by their id.
+      description: This endpoint allows fetching a customer by id.
       parameters:
         - schema:
             type: string
@@ -328,10 +326,10 @@ paths:
                 description: Customer not found.
   /v1/customers/by-external-id/{externalId}:
     delete:
-      summary: Delete a Customer by their external id
+      summary: Delete customer by external ID
       tags:
         - Customers
-      description: This endpoint allows deleting a customer by external id.
+      description: This endpoint allows deleting a customer by external ID.
       parameters:
         - schema:
             type: string
@@ -361,10 +359,10 @@ paths:
               schema:
                 description: Customer not found.
     put:
-      summary: Update a Customer by their external id
+      summary: Update customer by external ID
       tags:
         - Customers
-      description: This endpoint allows the update of a customer by their external id.
+      description: This endpoint allows updating a customer by external ID.
       requestBody:
         content:
           application/json:
@@ -436,12 +434,10 @@ paths:
               schema:
                 description: Customer not found.
     get:
-      summary: Get a Customer by their external id
+      summary: Fetch customer by external ID
       tags:
         - Customers
-      description: >-
-        This endpoint provides access to detailed information about a customer
-        by their external id.
+      description: This endpoint allows fetching a customer by external ID.
       parameters:
         - schema:
             type: string
@@ -497,15 +493,14 @@ paths:
                 description: Customer not found.
   /v1/events/ingest:
     post:
-      summary: Ingest Events
+      summary: Ingest events
       tags:
         - Events
       description: >-
-        This endpoint allows for ingesting events related to customer
-        interactions with resources. Each event captures interactions at a
-        specific point in time, including the event name and customer, the
-        nature of the interaction (value), related properties and when it
-        occurred.
+        This endpoint allows ingesting events related to customer interactions
+        with resources. Each event captures interactions at a specific point in
+        time, including the event name and customer, the nature of the
+        interaction (value), related properties and when it occurred.
       requestBody:
         content:
           application/json:
@@ -650,16 +645,16 @@ paths:
                 additionalProperties: false
   /v1/invoices/:
     get:
-      summary: List Invoices
+      summary: List invoices
       tags:
         - Invoices
       description: >-
-        This endpoint allows for the retrieval of a list of invoices based on
-        customerId, customerExternalId, invoiceStartDateFrom,
-        invoiceStartDateTo,  invoiceEndDateFrom, and invoiceEndDateTo. The
-        response will include a list of invoices that match the provided
-        filters. It also returns, if available, a `pix` and `bank_slip` URL for
-        each invoice, which expires after 15 minutes. 
+        This endpoint allows fetching a list of invoices based on customerId,
+        customerExternalId, invoiceStartDateFrom, invoiceStartDateTo, 
+        invoiceEndDateFrom, and invoiceEndDateTo. The response will include a
+        list of invoices that match the provided filters. It also returns, if
+        available, a `pix` and `bank_slip` URL for each invoice, which expires
+        after 15 minutes.
       parameters:
         - schema:
             type: string
@@ -1028,13 +1023,13 @@ paths:
                 additionalProperties: false
   /v1/invoices/{id}:
     get:
-      summary: Get Invoice
+      summary: Fetch invoice
       tags:
         - Invoices
       description: >-
-        This endpoint allows for the retrieval of an invoice by id. It also
-        returns, if available, a `pix` and `bank_slip` URL for each invoice,
-        which expires after 15 minutes.
+        This endpoint allows fetching an invoice by id. It also returns, if
+        available, a `pix` and `bank_slip` URL for each invoice, which expires
+        after 15 minutes.
       parameters:
         - schema:
             type: string
@@ -1835,12 +1830,12 @@ paths:
                 description: The invoice was not found.
   /v1/contracts/:
     post:
-      summary: Create a Contract
+      summary: Create contract
       tags:
         - Contracts
       description: >-
-        This endpoint allows the creation of a new contract. If needed, it also
-        permits the creation of a new customer and a new payment account or the
+        This endpoint allows creating a new contract. If needed, it also permits
+        the creation of a new customer and a new payment account or the
         provision of existing customer and payment account IDs to sync the new
         contract with them.
       requestBody:
@@ -2433,10 +2428,10 @@ paths:
                 description: Failed to create customer, payment account, or contract.
   /v1/contracts/{id}:
     put:
-      summary: Update a Contract
+      summary: Update contract
       tags:
         - Contracts
-      description: This endpoint allows the update of a contract.
+      description: This endpoint allows updating a contract by id.
       requestBody:
         content:
           application/json:
@@ -2989,10 +2984,10 @@ paths:
               schema:
                 description: Contract not found.
     get:
-      summary: Get Contract
+      summary: Fetch contract
       tags:
         - Contracts
-      description: This endpoint allows the retrieval of a contract.
+      description: This endpoint allows fetching a contract by id.
       parameters:
         - schema:
             type: string
@@ -3323,10 +3318,10 @@ paths:
                 description: Contract not found.
   /v1/contracts/{id}/cancel:
     post:
-      summary: Cancel a Contract
+      summary: Cancel contract
       tags:
         - Contracts
-      description: This endpoint allows the cancelation of a contract.
+      description: This endpoint allows canceling a contract by id.
       parameters:
         - schema:
             type: string
