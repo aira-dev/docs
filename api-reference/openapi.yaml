@@ -41,6 +41,14 @@ paths:
                   description: The name of the customer.
                   type: string
                   minLength: 1
+                customFields:
+                  type: object
+                  description: >-
+                    Custom fields that can be associated with the customer. The
+                    fields must be previously created in the system before they
+                    can be used.
+                  additionalProperties:
+                    type: string
               required:
                 - externalId
                 - name
@@ -79,6 +87,14 @@ paths:
                     description: The name of the customer.
                     type: string
                     minLength: 1
+                  customFields:
+                    type: object
+                    description: >-
+                      Custom fields that can be associated with the customer.
+                      The fields must be previously created in the system before
+                      they can be used.
+                    additionalProperties:
+                      type: string
                 required:
                   - id
                   - externalId
@@ -156,6 +172,14 @@ paths:
                           description: The name of the customer.
                           type: string
                           minLength: 1
+                        customFields:
+                          type: object
+                          description: >-
+                            Custom fields that can be associated with the
+                            customer. The fields must be previously created in
+                            the system before they can be used.
+                          additionalProperties:
+                            type: string
                       required:
                         - id
                         - externalId
@@ -215,6 +239,14 @@ paths:
                   description: The name of the customer.
                   type: string
                   minLength: 1
+                customFields:
+                  type: object
+                  description: >-
+                    Custom fields that can be associated with the customer. The
+                    fields must be previously created in the system before they
+                    can be used.
+                  additionalProperties:
+                    type: string
               required:
                 - name
               additionalProperties: false
@@ -259,6 +291,14 @@ paths:
                     description: The name of the customer.
                     type: string
                     minLength: 1
+                  customFields:
+                    type: object
+                    description: >-
+                      Custom fields that can be associated with the customer.
+                      The fields must be previously created in the system before
+                      they can be used.
+                    additionalProperties:
+                      type: string
                 required:
                   - id
                   - externalId
@@ -313,6 +353,14 @@ paths:
                     description: The name of the customer.
                     type: string
                     minLength: 1
+                  customFields:
+                    type: object
+                    description: >-
+                      Custom fields that can be associated with the customer.
+                      The fields must be previously created in the system before
+                      they can be used.
+                    additionalProperties:
+                      type: string
                 required:
                   - id
                   - externalId
@@ -374,6 +422,14 @@ paths:
                   description: The name of the customer.
                   type: string
                   minLength: 1
+                customFields:
+                  type: object
+                  description: >-
+                    Custom fields that can be associated with the customer. The
+                    fields must be previously created in the system before they
+                    can be used.
+                  additionalProperties:
+                    type: string
               required:
                 - name
               additionalProperties: false
@@ -422,6 +478,14 @@ paths:
                     description: The name of the customer.
                     type: string
                     minLength: 1
+                  customFields:
+                    type: object
+                    description: >-
+                      Custom fields that can be associated with the customer.
+                      The fields must be previously created in the system before
+                      they can be used.
+                    additionalProperties:
+                      type: string
                 required:
                   - id
                   - externalId
@@ -480,6 +544,14 @@ paths:
                     description: The name of the customer.
                     type: string
                     minLength: 1
+                  customFields:
+                    type: object
+                    description: >-
+                      Custom fields that can be associated with the customer.
+                      The fields must be previously created in the system before
+                      they can be used.
+                    additionalProperties:
+                      type: string
                 required:
                   - id
                   - externalId
@@ -541,12 +613,18 @@ paths:
                         type: object
                         description: Additional properties associated with the event.
                         additionalProperties:
-                          oneOf:
-                            - type: string
+                          anyOf:
                             - type: number
+                            - type: string
                             - type: boolean
                         required:
                           - value
+                        propertyNames:
+                          pattern: ^[a-zA-Z](?:[a-zA-Z0-9]*|(?:_[a-zA-Z0-9]+))*$
+                          errorMessage: >-
+                            Property names must follow standard naming
+                            conventions and cannot contain spaces or special
+                            characters.
                         properties:
                           value:
                             type: number
@@ -748,6 +826,14 @@ paths:
                           description: The name of the customer.
                           type: string
                           minLength: 1
+                        customFields:
+                          type: object
+                          description: >-
+                            Custom fields that can be associated with the
+                            customer. The fields must be previously created in
+                            the system before they can be used.
+                          additionalProperties:
+                            type: string
                       required:
                         - id
                         - externalId
@@ -1074,6 +1160,14 @@ paths:
                         description: The name of the customer.
                         type: string
                         minLength: 1
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          customer. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - externalId
@@ -1860,6 +1954,14 @@ paths:
                       description: The name of the customer.
                       type: string
                       minLength: 1
+                    customFields:
+                      type: object
+                      description: >-
+                        Custom fields that can be associated with the customer.
+                        The fields must be previously created in the system
+                        before they can be used.
+                      additionalProperties:
+                        type: string
                   required:
                     - externalId
                     - name
@@ -2060,6 +2162,14 @@ paths:
                       description: >-
                         Optional billing settings. If not provided, minimum
                         amount will be set to zero.
+                    customFields:
+                      type: object
+                      description: >-
+                        Custom fields that can be associated with the contract.
+                        The fields must be previously created in the system
+                        before they can be used.
+                      additionalProperties:
+                        type: string
                   required:
                     - startDate
                     - endDate
@@ -2191,6 +2301,14 @@ paths:
                           - billingCycleMinimumAmount
                         additionalProperties: false
                         description: Contract billing settings.
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          contract. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - startDate
@@ -2221,6 +2339,14 @@ paths:
                         description: The name of the customer.
                         type: string
                         minLength: 1
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          customer. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - externalId
@@ -2627,6 +2753,14 @@ paths:
                       description: >-
                         Optional billing settings. If not provided, minimum
                         amount will be set to zero.
+                    customFields:
+                      type: object
+                      description: >-
+                        Custom fields that can be associated with the contract.
+                        The fields must be previously created in the system
+                        before they can be used.
+                      additionalProperties:
+                        type: string
                   required:
                     - startDate
                     - endDate
@@ -2764,6 +2898,14 @@ paths:
                           - billingCycleMinimumAmount
                         additionalProperties: false
                         description: Contract billing settings.
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          contract. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - startDate
@@ -2794,6 +2936,14 @@ paths:
                         description: The name of the customer.
                         type: string
                         minLength: 1
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          customer. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - externalId
@@ -3098,6 +3248,14 @@ paths:
                           - billingCycleMinimumAmount
                         additionalProperties: false
                         description: Contract billing settings.
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          contract. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - startDate
@@ -3128,6 +3286,14 @@ paths:
                         description: The name of the customer.
                         type: string
                         minLength: 1
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          customer. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - externalId
@@ -3434,6 +3600,14 @@ paths:
                           - billingCycleMinimumAmount
                         additionalProperties: false
                         description: Contract billing settings.
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          contract. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - startDate
@@ -3464,6 +3638,14 @@ paths:
                         description: The name of the customer.
                         type: string
                         minLength: 1
+                      customFields:
+                        type: object
+                        description: >-
+                          Custom fields that can be associated with the
+                          customer. The fields must be previously created in the
+                          system before they can be used.
+                        additionalProperties:
+                          type: string
                     required:
                       - id
                       - externalId
