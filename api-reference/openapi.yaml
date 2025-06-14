@@ -612,26 +612,27 @@ paths:
                       properties:
                         type: object
                         description: Additional properties associated with the event.
-                        additionalProperties:
-                          anyOf:
-                            - type: number
-                            - type: string
-                            - type: boolean
-                        required:
-                          - value
-                        propertyNames:
-                          pattern: ^[a-zA-Z](?:[a-zA-Z0-9]*|(?:_[a-zA-Z0-9]+))*$
-                          errorMessage: >-
-                            Property names must follow standard naming
-                            conventions and cannot contain spaces or special
-                            characters.
-                        properties:
-                          value:
-                            type: number
-                            minimum: 0
-                            description: >-
-                              Numeric value associated with the event. Must be
-                              non-negative.
+                        allOf:
+                          - required:
+                              - value
+                            properties:
+                              value:
+                                type: number
+                                minimum: 0
+                                description: >-
+                                  Numeric value associated with the event. Must
+                                  be non-negative.
+                          - propertyNames:
+                              pattern: ^[a-zA-Z](?:[a-zA-Z0-9]*|(?:_[a-zA-Z0-9]+))*$
+                              errorMessage: >-
+                                Property names must follow standard naming
+                                conventions and cannot contain spaces or special
+                                characters.
+                            additionalProperties:
+                              anyOf:
+                                - type: number
+                                - type: string
+                                - type: boolean
                       occurredAt:
                         type: string
                         format: date-time
