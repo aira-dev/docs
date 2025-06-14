@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: API Reference
   version: '1.0'
-  description: Aira API Reference
+  description: Aira API Referencee
   x-logo:
     url: https://static.useaira.com/images/airalogo.svg
     backgroundColor: '#FFFFFF'
