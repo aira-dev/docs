@@ -36,7 +36,7 @@ paths:
                     customer. This field can not be updated.
                   type: string
                   minLength: 1
-                  pattern: ^[a-zA-Z0-9-_]+$
+                  pattern: ^[a-zA-Z0-9_-]+$
                 name:
                   description: The name of the customer.
                   type: string
@@ -82,7 +82,7 @@ paths:
                       the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^[a-zA-Z0-9-_]+$
+                    pattern: ^[a-zA-Z0-9_-]+$
                   name:
                     description: The name of the customer.
                     type: string
@@ -167,7 +167,7 @@ paths:
                             updated.
                           type: string
                           minLength: 1
-                          pattern: ^[a-zA-Z0-9-_]+$
+                          pattern: ^[a-zA-Z0-9_-]+$
                         name:
                           description: The name of the customer.
                           type: string
@@ -286,7 +286,7 @@ paths:
                       the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^[a-zA-Z0-9-_]+$
+                    pattern: ^[a-zA-Z0-9_-]+$
                   name:
                     description: The name of the customer.
                     type: string
@@ -348,7 +348,7 @@ paths:
                       the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^[a-zA-Z0-9-_]+$
+                    pattern: ^[a-zA-Z0-9_-]+$
                   name:
                     description: The name of the customer.
                     type: string
@@ -382,7 +382,7 @@ paths:
         - schema:
             type: string
             minLength: 1
-            pattern: ^[a-zA-Z0-9-_]+$
+            pattern: ^[a-zA-Z0-9_-]+$
           in: path
           name: externalId
           required: true
@@ -439,7 +439,7 @@ paths:
         - schema:
             type: string
             minLength: 1
-            pattern: ^[a-zA-Z0-9-_]+$
+            pattern: ^[a-zA-Z0-9_-]+$
           in: path
           name: externalId
           required: true
@@ -473,7 +473,7 @@ paths:
                       the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^[a-zA-Z0-9-_]+$
+                    pattern: ^[a-zA-Z0-9_-]+$
                   name:
                     description: The name of the customer.
                     type: string
@@ -506,7 +506,7 @@ paths:
         - schema:
             type: string
             minLength: 1
-            pattern: ^[a-zA-Z0-9-_]+$
+            pattern: ^[a-zA-Z0-9_-]+$
           in: path
           name: externalId
           required: true
@@ -539,7 +539,7 @@ paths:
                       the customer. This field can not be updated.
                     type: string
                     minLength: 1
-                    pattern: ^[a-zA-Z0-9-_]+$
+                    pattern: ^[a-zA-Z0-9_-]+$
                   name:
                     description: The name of the customer.
                     type: string
@@ -593,19 +593,19 @@ paths:
                       idempotencyKey:
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                         description: Unique key to ensure idempotency of the event.
                       eventName:
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                         description: >-
                           Identifier of the event. Used on the resource
                           definition.
                       customerExternalId:
                         type: string
                         minLength: 1
-                        pattern: ^\S+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                         description: >-
                           External identifier of the customer involved in the
                           event.
@@ -814,7 +814,7 @@ paths:
                             updated.
                           type: string
                           minLength: 1
-                          pattern: ^[a-zA-Z0-9-_]+$
+                          pattern: ^[a-zA-Z0-9_-]+$
                         name:
                           description: The name of the customer.
                           type: string
@@ -1148,7 +1148,7 @@ paths:
                           identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^[a-zA-Z0-9-_]+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                       name:
                         description: The name of the customer.
                         type: string
@@ -1942,7 +1942,7 @@ paths:
                         the customer. This field can not be updated.
                       type: string
                       minLength: 1
-                      pattern: ^[a-zA-Z0-9-_]+$
+                      pattern: ^[a-zA-Z0-9_-]+$
                     name:
                       description: The name of the customer.
                       type: string
@@ -2327,7 +2327,7 @@ paths:
                           identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^[a-zA-Z0-9-_]+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                       name:
                         description: The name of the customer.
                         type: string
@@ -2924,7 +2924,7 @@ paths:
                           identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^[a-zA-Z0-9-_]+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                       name:
                         description: The name of the customer.
                         type: string
@@ -3274,7 +3274,7 @@ paths:
                           identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^[a-zA-Z0-9-_]+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                       name:
                         description: The name of the customer.
                         type: string
@@ -3626,7 +3626,7 @@ paths:
                           identify the customer. This field can not be updated.
                         type: string
                         minLength: 1
-                        pattern: ^[a-zA-Z0-9-_]+$
+                        pattern: ^[a-zA-Z0-9_-]+$
                       name:
                         description: The name of the customer.
                         type: string
