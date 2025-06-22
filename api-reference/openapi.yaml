@@ -35,12 +35,12 @@ paths:
                     external system, used throughout the system to identify the
                     customer. This field can not be updated.
                   type: string
-                  minLength: 1
                   pattern: ^[a-zA-Z0-9_-]+$
+                  example: cust_1234567890abcdef
                 name:
                   description: The name of the customer.
                   type: string
-                  minLength: 1
+                  example: Acme Inc.
                 customFields:
                   type: object
                   description: >-
@@ -74,19 +74,18 @@ paths:
                   id:
                     description: The unique identifier of the customer in our system.
                     type: string
-                    minLength: 1
                   externalId:
                     description: >-
                       An optional external identifier of the customer from the
                       external system, used throughout the system to identify
                       the customer. This field can not be updated.
                     type: string
-                    minLength: 1
                     pattern: ^[a-zA-Z0-9_-]+$
+                    example: cust_1234567890abcdef
                   name:
                     description: The name of the customer.
                     type: string
-                    minLength: 1
+                    example: Acme Inc.
                   customFields:
                     type: object
                     description: >-
@@ -158,7 +157,6 @@ paths:
                         id:
                           description: The unique identifier of the customer in our system.
                           type: string
-                          minLength: 1
                         externalId:
                           description: >-
                             An optional external identifier of the customer from
@@ -166,12 +164,12 @@ paths:
                             identify the customer. This field can not be
                             updated.
                           type: string
-                          minLength: 1
                           pattern: ^[a-zA-Z0-9_-]+$
+                          example: cust_1234567890abcdef
                         name:
                           description: The name of the customer.
                           type: string
-                          minLength: 1
+                          example: Acme Inc.
                         customFields:
                           type: object
                           description: >-
@@ -202,7 +200,6 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
           in: path
           name: id
           required: true
@@ -238,7 +235,7 @@ paths:
                 name:
                   description: The name of the customer.
                   type: string
-                  minLength: 1
+                  example: Acme Inc.
                 customFields:
                   type: object
                   description: >-
@@ -255,7 +252,6 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
           in: path
           name: id
           required: true
@@ -278,19 +274,18 @@ paths:
                   id:
                     description: The unique identifier of the customer in our system.
                     type: string
-                    minLength: 1
                   externalId:
                     description: >-
                       An optional external identifier of the customer from the
                       external system, used throughout the system to identify
                       the customer. This field can not be updated.
                     type: string
-                    minLength: 1
                     pattern: ^[a-zA-Z0-9_-]+$
+                    example: cust_1234567890abcdef
                   name:
                     description: The name of the customer.
                     type: string
-                    minLength: 1
+                    example: Acme Inc.
                   customFields:
                     type: object
                     description: >-
@@ -318,7 +313,6 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
           in: path
           name: id
           required: true
@@ -340,19 +334,18 @@ paths:
                   id:
                     description: The unique identifier of the customer in our system.
                     type: string
-                    minLength: 1
                   externalId:
                     description: >-
                       An optional external identifier of the customer from the
                       external system, used throughout the system to identify
                       the customer. This field can not be updated.
                     type: string
-                    minLength: 1
                     pattern: ^[a-zA-Z0-9_-]+$
+                    example: cust_1234567890abcdef
                   name:
                     description: The name of the customer.
                     type: string
-                    minLength: 1
+                    example: Acme Inc.
                   customFields:
                     type: object
                     description: >-
@@ -381,8 +374,8 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
             pattern: ^[a-zA-Z0-9_-]+$
+          example: cust_1234567890abcdef
           in: path
           name: externalId
           required: true
@@ -421,7 +414,7 @@ paths:
                 name:
                   description: The name of the customer.
                   type: string
-                  minLength: 1
+                  example: Acme Inc.
                 customFields:
                   type: object
                   description: >-
@@ -438,8 +431,8 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
             pattern: ^[a-zA-Z0-9_-]+$
+          example: cust_1234567890abcdef
           in: path
           name: externalId
           required: true
@@ -465,19 +458,18 @@ paths:
                   id:
                     description: The unique identifier of the customer in our system.
                     type: string
-                    minLength: 1
                   externalId:
                     description: >-
                       An optional external identifier of the customer from the
                       external system, used throughout the system to identify
                       the customer. This field can not be updated.
                     type: string
-                    minLength: 1
                     pattern: ^[a-zA-Z0-9_-]+$
+                    example: cust_1234567890abcdef
                   name:
                     description: The name of the customer.
                     type: string
-                    minLength: 1
+                    example: Acme Inc.
                   customFields:
                     type: object
                     description: >-
@@ -505,8 +497,8 @@ paths:
       parameters:
         - schema:
             type: string
-            minLength: 1
             pattern: ^[a-zA-Z0-9_-]+$
+          example: cust_1234567890abcdef
           in: path
           name: externalId
           required: true
@@ -531,19 +523,18 @@ paths:
                   id:
                     description: The unique identifier of the customer in our system.
                     type: string
-                    minLength: 1
                   externalId:
                     description: >-
                       An optional external identifier of the customer from the
                       external system, used throughout the system to identify
                       the customer. This field can not be updated.
                     type: string
-                    minLength: 1
                     pattern: ^[a-zA-Z0-9_-]+$
+                    example: cust_1234567890abcdef
                   name:
                     description: The name of the customer.
                     type: string
-                    minLength: 1
+                    example: Acme Inc.
                   customFields:
                     type: object
                     description: >-
@@ -592,26 +583,31 @@ paths:
                     properties:
                       idempotencyKey:
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
-                        description: Unique key to ensure idempotency of the event.
+                        description: >-
+                          Unique key to ensure idempotency of the event. This
+                          key is used to prevent duplicate events from being
+                          recorded.
+                        example: 123e4567-e89b-12d3-a456-426614174000
                       eventName:
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
                         description: >-
                           Identifier of the event. Used on the resource
                           definition.
+                        example: api_request
                       customerExternalId:
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
                         description: >-
                           External identifier of the customer involved in the
                           event.
+                        example: cust_1234567890abcdef
                       properties:
                         type: object
-                        description: Additional properties associated with the event.
+                        description: >-
+                          A dictionary of additional properties associated with
+                          the event.
                         propertyNames:
                           pattern: ^[a-zA-Z](?:[a-zA-Z0-9]*|(?:_[a-zA-Z0-9]+))*$
                         required:
@@ -620,15 +616,24 @@ paths:
                           value:
                             type: number
                             minimum: 0
+                            example: 3600
                         additionalProperties:
                           anyOf:
                             - type: number
                             - type: string
                             - type: boolean
+                        example:
+                          value: 100
+                          endpoint: /api/v1/users
+                          method: GET
+                          status_code: 200
                       occurredAt:
                         type: string
                         format: date-time
-                        description: Timestamp indicating when the event occurred.
+                        description: >-
+                          ISO 8601 timestamp in UTC (no timezone offset)
+                          indicating when the event occurred.
+                        example: '2024-01-01T12:00:00Z'
                     required:
                       - idempotencyKey
                       - eventName
@@ -805,7 +810,6 @@ paths:
                         id:
                           description: The unique identifier of the customer in our system.
                           type: string
-                          minLength: 1
                         externalId:
                           description: >-
                             An optional external identifier of the customer from
@@ -813,12 +817,12 @@ paths:
                             identify the customer. This field can not be
                             updated.
                           type: string
-                          minLength: 1
                           pattern: ^[a-zA-Z0-9_-]+$
+                          example: cust_1234567890abcdef
                         name:
                           description: The name of the customer.
                           type: string
-                          minLength: 1
+                          example: Acme Inc.
                         customFields:
                           type: object
                           description: >-
@@ -1140,19 +1144,18 @@ paths:
                       id:
                         description: The unique identifier of the customer in our system.
                         type: string
-                        minLength: 1
                       externalId:
                         description: >-
                           An optional external identifier of the customer from
                           the external system, used throughout the system to
                           identify the customer. This field can not be updated.
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
+                        example: cust_1234567890abcdef
                       name:
                         description: The name of the customer.
                         type: string
-                        minLength: 1
+                        example: Acme Inc.
                       customFields:
                         type: object
                         description: >-
@@ -1941,12 +1944,12 @@ paths:
                         external system, used throughout the system to identify
                         the customer. This field can not be updated.
                       type: string
-                      minLength: 1
                       pattern: ^[a-zA-Z0-9_-]+$
+                      example: cust_1234567890abcdef
                     name:
                       description: The name of the customer.
                       type: string
-                      minLength: 1
+                      example: Acme Inc.
                     customFields:
                       type: object
                       description: >-
@@ -2075,14 +2078,12 @@ paths:
                   additionalProperties: false
                 customerId:
                   type: string
-                  format: uuid
                   description: >-
                     Existing customer ID. If provided, a new customer will not
                     be created. 
                             **Note:** You cannot provide both a `customerId` and a new `customer` object at the same time.
                 paymentAccountId:
                   type: string
-                  format: uuid
                   description: >-
                     Existing payment account ID. If provided, a new payment
                     account will not be created. 
@@ -2111,7 +2112,6 @@ paths:
                       type: array
                       items:
                         type: string
-                        format: uuid
                       minItems: 0
                       description: List of plan IDs to be associated with the contract.
                     paymentSettings:
@@ -2319,19 +2319,18 @@ paths:
                       id:
                         description: The unique identifier of the customer in our system.
                         type: string
-                        minLength: 1
                       externalId:
                         description: >-
                           An optional external identifier of the customer from
                           the external system, used throughout the system to
                           identify the customer. This field can not be updated.
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
+                        example: cust_1234567890abcdef
                       name:
                         description: The name of the customer.
                         type: string
-                        minLength: 1
+                        example: Acme Inc.
                       customFields:
                         type: object
                         description: >-
@@ -2702,7 +2701,6 @@ paths:
                       type: array
                       items:
                         type: string
-                        format: uuid
                       minItems: 0
                       description: List of plan IDs to be associated with the contract.
                     paymentSettings:
@@ -2916,19 +2914,18 @@ paths:
                       id:
                         description: The unique identifier of the customer in our system.
                         type: string
-                        minLength: 1
                       externalId:
                         description: >-
                           An optional external identifier of the customer from
                           the external system, used throughout the system to
                           identify the customer. This field can not be updated.
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
+                        example: cust_1234567890abcdef
                       name:
                         description: The name of the customer.
                         type: string
-                        minLength: 1
+                        example: Acme Inc.
                       customFields:
                         type: object
                         description: >-
@@ -3266,19 +3263,18 @@ paths:
                       id:
                         description: The unique identifier of the customer in our system.
                         type: string
-                        minLength: 1
                       externalId:
                         description: >-
                           An optional external identifier of the customer from
                           the external system, used throughout the system to
                           identify the customer. This field can not be updated.
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
+                        example: cust_1234567890abcdef
                       name:
                         description: The name of the customer.
                         type: string
-                        minLength: 1
+                        example: Acme Inc.
                       customFields:
                         type: object
                         description: >-
@@ -3618,19 +3614,18 @@ paths:
                       id:
                         description: The unique identifier of the customer in our system.
                         type: string
-                        minLength: 1
                       externalId:
                         description: >-
                           An optional external identifier of the customer from
                           the external system, used throughout the system to
                           identify the customer. This field can not be updated.
                         type: string
-                        minLength: 1
                         pattern: ^[a-zA-Z0-9_-]+$
+                        example: cust_1234567890abcdef
                       name:
                         description: The name of the customer.
                         type: string
-                        minLength: 1
+                        example: Acme Inc.
                       customFields:
                         type: object
                         description: >-
