@@ -1,0 +1,118 @@
+---
+title: "Planos"
+description: "Planos definem regras de cobrança: mensalidade, franquia mínima e métricas (recurso + precificação)"
+sidebarTitle: "Planos"
+---
+
+# Planos na Aira
+
+## O que é um Plano?
+
+Um plano define as regras de cobrança do cliente na Aira. Ele estabelece:
+
+- Se haverá mensalidade fixa
+- Qual será a franquia mínima de faturamento
+- Quais são as métricas de cobrança (associação de um recurso a uma lógica de precificação)
+
+## 1. Mensalidade e Franquia Mínima
+
+| Elemento | Definição |
+| --- | --- |
+| Mensalidade | Valor fixo cobrado independentemente do uso |
+| Franquia Mínima | Valor mínimo que o cliente pagará no plano; se o uso calculado for inferior, o valor é ajustado para a franquia |
+
+> Exemplo:
+>
+> - Mensalidade: R$ 1.000 (sempre será cobrada)
+> - Franquia: R\$ 5.000 (se o uso total for R\$ 4.200, o sistema cobra R\$ 5.000)
+
+## 2. Métricas
+
+As métricas são associações entre recursos e a lógica de precificação usada para transformá-los em cobrança.
+
+### Componentes de uma métrica
+
+| Componente | Descrição |
+| --- | --- |
+| Recurso | Fonte da volumetria de uso a ser cobrada |
+| Valor Fixo | Valor fixo cobrado para a métrica, independentemente do uso |
+| Valor Mínimo da Métrica | Valor mínimo a ser cobrado com base apenas na métrica |
+| Nome da Métrica | Nome amigável que pode ser exibido ao cliente |
+| Modelo de Cobrança | Define como o uso é interpretado para aplicar as faixas de preço |
+
+Consulte [Recursos](/essential-concepts/resources) para entender filtragem, agregação e tipos (unitário vs monetário).
+
+## 3. Modelos de Cobrança
+
+Cada métrica utiliza um modelo de cobrança, que determina como o uso será lido e precificado.
+
+### 3.1. Modelo Integral
+
+O valor de uso total do recurso no ciclo (soma ou último valor) é diretamente mapeado nas faixas de preço.
+
+### 3.2. Modelo Prorata (diário)
+
+- Compatível apenas com recursos agregados por último do período
+- Para cada dia, o sistema:
+  1. Pega o último valor da métrica naquele dia
+  2. Aplica nas faixas de preço
+  3. Divide o valor da faixa por 30 ou 31 (dias do mês)
+- Ideal para cenários como usuários ativos por dia (licenciamento diário)
+
+> Exemplo: Um usuário ficou ativo por 12 dias. O valor proporcional será equivalente a 12/30 do valor total da faixa correspondente.
+
+## 4. Faixas de Preço
+
+Definem quanto será cobrado com base na volumetria. Existem dois métodos de aplicação:
+
+### 4.1. Modo Progressivo
+
+O uso avança faixa a faixa, acumulativamente.
+
+> Exemplo:
+>
+> - Faixa 1: até 100 unidades → R$ 0,10/unidade
+> - Faixa 2: até 200 unidades → R$ 0,08/unidade
+> - Uso de 250 → 100 x R$0,10 + 100 x R$0,08 + 50 x faixa 3
+
+### 4.2. Modo Faixa Única
+
+A volumetria total determina a faixa destino, e todo o uso é cobrado com os preços daquela faixa.
+
+> Exemplo: Uso de 150 cai na Faixa 2 → 150 x R$0,08
+
+## 5. Tipos de Precificação por Faixa
+
+As opções variam de acordo com o tipo da métrica (monetária ou unitária):
+
+### Métrica Monetária
+
+- Fixo: cobra valor fixo por faixa (ex: R$1.000)
+- Percentual: cobra percentual do valor monetário do recurso (ex: 5%)
+
+### Métrica Unitária
+
+- Unitário: valor por unidade (ex: R$0,20 por unidade)
+- Fixo: valor fixo pela faixa (independente da quantidade)
+- Pacote: cobra por pacotes (ex: R$100 por 100 unidades). Se o cliente consumir qualquer unidade do pacote, o pacote é cobrado integralmente.
+
+## 6. Versionamento de Planos
+
+Planos são versionados. Quando você edita um plano:
+
+- Uma nova versão é criada
+- A nova versão não afeta contratos antigos automaticamente
+- Para aplicar a nova versão, é preciso atualizar os contratos manualmente
+
+> Você pode visualizar e gerenciar contratos desatualizados em:
+> Gerência de Contratos → Versões sobrescritas / reajustadas
+
+## 7. Deleção de Planos
+
+Um plano só pode ser deletado se não estiver associado a nenhum contrato ativo.
+
+## Veja Também
+
+- [Eventos](/essential-concepts/events)
+- [Recursos](/essential-concepts/resources)
+

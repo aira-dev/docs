@@ -1,0 +1,64 @@
+{
+    "$schema": "https://mintlify.com/schema.json",
+    "name": "Aira",
+    "theme": "maple",
+    "logo": {
+        "dark": "/logo/dark.svg",
+        "light": "/logo/light.svg"
+    },
+    "favicon": "/favicon.svg",
+    "colors": {
+        "primary": "#7048E8",
+        "light": "#B197FC",
+        "dark": "#6741D9"
+    },
+    "topbarLinks": [
+        {
+            "name": "Support",
+            "url": "mailto:contato@useaira.com"
+        }
+    ],
+    "topbarCtaButton": {
+        "name": "Login",
+        "url": "https://app.useaira.com"
+    },
+    "search": {
+        "enabled": true,
+        "placeholder": "Buscar na documentação..."
+    },
+    "navigation": {
+        "groups": [
+            {
+                "group": "Conheça a Aira",
+                "icon": "play",
+                "pages": [
+                    "introduction"
+                ]
+            },
+            {
+                "group": "Conceitos Essenciais",
+                "icon": "book-open",
+                "pages": [
+                    "/essential-concepts/events",
+                    "/essential-concepts/resources",
+                    "/essential-concepts/plans",
+                    "/essential-concepts/contracts",
+                    "/essential-concepts/customers"
+                ]
+            },
+            {
+                "group": "Referência da API",
+                "icon": "square-terminal",
+                "openapi": "/api-reference/openapi.json",
+                "url": "api-reference",
+                "pages": [
+                    "api-reference/webhooks",
+                    "api-reference/error-responses"
+                ]
+            }
+        ]
+    },
+    "footerSocials": {
+        "linkedin": "https://linkedin.com/company/useaira"
+    }
+}

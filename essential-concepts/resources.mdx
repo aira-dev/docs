@@ -1,0 +1,143 @@
+---
+title: "Recursos"
+description: "Recursos agregam e filtram eventos de uso para compor a base de cobrança na Aira"
+sidebarTitle: "Recursos"
+---
+
+## Visão Geral
+
+Na Aira, os recursos são a ponte entre os eventos de uso e o faturamento. Eles definem quais eventos entram no cálculo e como esses eventos serão agregados ao longo do período de cobrança.
+
+## O que é um Recurso?
+
+Um recurso é uma entidade de configuração que:
+
+- Seleciona um conjunto de eventos por meio de filtros
+- Define a forma de agregação desses eventos dentro do período de faturamento
+- Pode ser reutilizado por múltiplos planos e regras de precificação
+
+Isso permite transformar eventos de uso brutos em métricas de cobrança consistentes e reutilizáveis.
+
+### Relação com Eventos
+
+Os recursos operam sobre eventos previamente enviados ao sistema. Se você ainda não está familiarizado com eventos, veja a página de [Eventos](/essential-concepts/events).
+
+## Filtragem de Eventos
+
+Os recursos permitem escolher quais eventos participam do cálculo. A filtragem pode considerar, por exemplo:
+
+- event_name: incluir um ou mais tipos de evento
+- metadata: restringir por atributos adicionais (ex.: canal, origem, categoria)
+- tags: classificar e limitar o escopo do uso
+
+Exemplo conceitual de filtros que combinam eventos similares:
+
+```js
+Inclui eventos com event_name em { "ticket_resolved_ai", "ticket_resolved_human" }
+E metadata.agent_type em { "ai", "human" }
+```
+
+Com isso, é possível agrupar diferentes fontes de uso em uma única métrica de cobrança.
+
+## Agregação de Eventos
+
+Depois de filtrados, os eventos precisam ser agregados para gerar o valor utilizado dentro do período de faturamento. Há dois tipos principais de agregação:
+
+### 1. Agregação por Soma
+
+Soma todos os valores dos eventos filtrados ocorridos no período.
+
+- **Quando usar**: Métricas que partem de zero e acumulam (ex.: requisições de API, e-mails enviados, mensagens processadas).
+- **Comportamento**: Cada ocorrência adiciona ao total do período.
+
+Exemplo:
+
+```
+Eventos durante o período: 120, 80, 300
+Agregação por soma => 120 + 80 + 300 = 500
+```
+
+### 2. Agregação pelo Último do Período
+
+Considera apenas o último valor registrado dentro do período, por tipo de evento filtrado (ou por chave de agrupamento definida pelo recurso).
+
+- **Quando usar**: Métricas que podem subir ou descer ao longo do tempo (ex.: usuários ativos, saldo de créditos, tamanho atual de um pool).
+- **Comportamento**: O valor de cobrança reflete o estado final no período.
+
+Exemplo:
+
+```
+Valores observados no período: 90 → 110 → 105 → 130
+Agregação último do período => 130
+```
+
+## Tipos de Recursos
+
+Os recursos na Aira podem ser classificados em dois tipos, de acordo com a natureza da quantidade que acompanham: **unitário** e **monetário**.
+
+- **Recursos Unitários**: Representam quantidades discretas, como número de requisições, tickets resolvidos, usuários ativos, mensagens enviadas, etc. Exemplos:
+  - `api_requests` (requisições de API)
+  - `tickets_resolvidos` (chamados resolvidos)
+  - `usuarios_ativos` (usuários ativos)
+
+- **Recursos Monetários**: Representam valores financeiros, como faturamento, receita, créditos consumidos, ou qualquer métrica expressa em dinheiro. Exemplos:
+  - `faturamento_total` (valor total faturado)
+  - `credito_consumido` (valor de créditos utilizados)
+  - `receita_bruta` (receita bruta em determinado período)
+
+> **Importante:** Para recursos monetários, os valores devem ser enviados sempre em centavos (exemplo: R$ 1200,50 deve ser enviado como `120050`). Isso garante precisão e evita problemas de arredondamento.
+
+A distinção entre unitário e monetário afeta:
+- **Como os valores são exibidos**: Recursos monetários são apresentados em formato de moeda, enquanto unitários mostram apenas a quantidade.
+- **Quais modelos de cobrança podem ser aplicados**: 
+  - Recursos unitários permitem modelos como cobrança por unidade, pacotes, valor fixo por faixa, etc.
+  - Recursos monetários permitem modelos como valor fixo ou percentual sobre o valor total.
+
+
+
+## Flexibilidade dos Recursos
+
+O mesmo conjunto de eventos pode ser reutilizado de formas diferentes ao criar recursos distintos:
+
+- Um recurso que soma chamados resolvidos por IA
+- Um recurso que soma chamados resolvidos por humanos
+- Um recurso que combina ambos (IA + humanos)
+
+Isso facilita a criação de planos de cobrança personalizados e a comparação entre cenários.
+
+## Exemplos Conceituais
+
+### Exemplo 1: Help Desk (IA + Humano)
+```
+Recurso: "tickets_resolvidos_total"
+Filtro: event_name ∈ { "ticket_resolved_ai", "ticket_resolved_human" }
+Agregação: soma
+Resultado no período: total de tickets resolvidos (independente do agente)
+```
+
+### Exemplo 2: Usuários Ativos
+```
+Recurso: "usuarios_ativos"
+Filtro: event_name = "active_users"
+Agregação: último do período
+Resultado no período: número de usuários ativos ao final do período
+```
+
+### Exemplo 3: Armazenamento por Bucket
+```
+Recurso: "armazenamento_bucket"
+Filtro: event_name = "storage_used", metadata.bucket = "prod"
+Agregação: soma
+Resultado no período: total de GB consumidos em buckets de produção
+```
+
+## Boas Práticas
+
+- Nomeie recursos de forma clara e consistente
+- Reutilize recursos entre planos para padronizar métricas
+- Valide filtros e agregações com eventos reais antes de publicar um plano
+
+## Veja Também
+
+- [Eventos](/essential-concepts/events)
+- [Planos](/essential-concepts/plans)

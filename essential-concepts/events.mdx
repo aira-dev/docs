@@ -1,0 +1,111 @@
+---
+title: "Eventos"
+description: "Eventos são representações de uso na Aira"
+sidebarTitle: "Eventos"
+---
+
+## Visão Geral
+
+Na Aira, os eventos são o coração do sistema de cobrança baseado em uso. Eles representam as ações de utilização que os clientes realizam na plataforma, servindo como base fundamental para calcular os custos e gerar as cobranças.
+
+## O que é um Evento?
+
+Um evento é uma entidade que captura uma ação de uso realizada pelo cliente. É como um "registro de atividade" que documenta quando, quem e o que foi utilizado na plataforma.
+
+### Características Principais
+
+- **Registro de Uso**: Cada evento representa uma utilização específica de um recurso
+- **Base para Cobrança**: Os eventos alimentam os planos de cobrança e cálculos de faturamento
+
+## Estrutura de um Evento
+
+Cada evento possui os seguintes atributos essenciais:
+
+### 1. ID Externo do Cliente
+Identifica qual cliente utilizou o recurso. Este campo mostra quem foi o usuário ou cliente que gerou aquele uso específico. Chamamos de ID Externo porque ele é determinado por você e mapeado na Aira. Por exemplo, se você tem um ID numérico para seus clientes, basta mapeá-lo na Aira e enviá-lo nos eventos.
+
+**Exemplo**: `"customer_123"`, `"tenant_abc"`
+
+### 2. Event Name
+É o nome ou identificador do tipo de recurso utilizado. Descreve o que foi usado ou qual ação foi realizada.
+
+**Exemplos**:
+- `"api_request"` - para requisições à API
+- `"storage_used"` - para uso de armazenamento
+- `"compute_hours"` - para horas de processamento
+- `"database_queries"` - para consultas ao banco
+
+### 3. Occurred At
+É a data e hora em que o evento ocorreu, ou seja, quando o uso foi registrado. Por padrão a API considera o fuso-horário UTC.
+
+**Formato**: Timestamp ISO 8601 (ex: `"2024-01-15T10:30:00Z"`)
+
+### 4. Propriedades Adicionais
+Além dos campos principais, um evento pode ter propriedades extras para caracterização adicional:
+
+- **Value**: Representa a quantidade utilizada daquele recurso específico. **É uma propriedade obrigatória.**
+<Note> Em recursos monetários, envie a quantidade usando centavos. Por exemplo, R$1200,50 seria o `value` de `120050`. </Note>
+- **Metadata**: Informações adicionais para filtragem ou caracterização
+- **Tags**: Categorização ou identificação adicional do evento
+
+## Exemplos Conceituais
+
+Esses exemplos são feitos para entendimento do conceito de eventos. Para saber sobre o envio via API, consulte a referência do [endpoint ingest events](/api-reference/events/ingest-events).
+
+### Exemplo 1: API Requests
+```
+Cliente: "empresa_tech"
+Evento: "api_request"
+Quando: 15/01/2024 às 14:30
+Quantidade: 1000 requisições
+```
+
+### Exemplo 2: Storage Usage
+```
+Cliente: "startup_cloud"
+Evento: "storage_used"
+Quando: 15/01/2024 às 23:59
+Quantidade: 50 GB
+```
+
+### Exemplo 3: Compute Resources
+```
+Cliente: "lab_ai"
+Evento: "compute_hours"
+Quando: 15/01/2024 às 18:00
+Quantidade: 24 horas de processamento
+```
+
+## Como Funciona na Prática
+
+1. **Registro**: O cliente utiliza um recurso da plataforma
+2. **Captura**: A Aira captura essa utilização e cria um evento
+3. **Armazenamento**: O evento é armazenado no sistema
+4. **Processamento**: Posteriormente, os eventos são processados para cálculos de cobrança
+5. **Faturamento**: Os eventos alimentam os planos de cobrança e geram as faturas
+
+## Como Enviar Eventos
+
+É possível enviar eventos via interface da Aira, via planilhas, integrações plug-and-play e via API:
+
+```bash
+POST https://api.useaira.com/v1/events/ingest
+Content-Type: application/json
+Authorization: Bearer YOUR_API_KEY
+
+{
+  "idempotencyKey": "20240115customer123apirequest"
+  "customerExternalId": "customer_123",
+  "eventName": "api_request",
+  "occurredAt": "2024-01-15T14:30:00Z",
+  "metadata": {
+    "value": 120
+  }
+}
+```
+
+Para detalhes técnicos completos sobre a API, consulte a [documentação de referência](/api-reference/events/ingest-events).
+
+## Recálculo de faturas
+
+As faturas são recalculadas diariamente, durante a madrugada, com os valores de envios realizados durante o dia. Depois da fatura fechada, ela não será recalculada automaticamente, apenas com uma ação manual do usuário.
