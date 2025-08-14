@@ -4570,6 +4570,12 @@
       }
     }
   },
+  "servers": [
+    {
+      "url": "https://api.useaira.com",
+      "description": "Public API base URL"
+    }
+  ],
   "security": [
     {
       "ApiKey": []
