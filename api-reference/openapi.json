@@ -2192,6 +2192,35 @@
                         "additionalProperties": false
                       },
                       "description": "List of additional items charged in this invoice."
+                    },
+                    "contract": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "The unique identifier of the contract."
+                        },
+                        "customFields": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Custom fields associated with the contract."
+                        },
+                        "processorId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "External processor identifier for the contract."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "customFields",
+                        "processorId"
+                      ],
+                      "nullable": true,
+                      "description": "Contract information associated with this invoice."
                     }
                   },
                   "required": [
@@ -2206,7 +2235,8 @@
                     "closedReason",
                     "status",
                     "plans",
-                    "additionalItems"
+                    "additionalItems",
+                    "contract"
                   ],
                   "additionalProperties": false,
                   "description": "The request was successfully processed and the invoice is returned."
@@ -2290,41 +2320,906 @@
         }
       }
     },
-    "/v1/invoices/{id}/document/download": {
+    "/v1/invoices/by-processor-id/{processorId}": {
       "get": {
-        "summary": "Download an Invoice document",
+        "summary": "Get Invoice by processorId",
         "tags": [
           "Invoices"
         ],
-        "description": "Download an invoice PDF by its invoiceId. Optionally control sending via the query parameter.",
+        "description": "Fetch invoice data by processorId, including contract custom fields.",
         "parameters": [
-          {
-            "schema": {
-              "type": "boolean",
-              "nullable": true
-            },
-            "in": "query",
-            "name": "overrideSendInvoice",
-            "required": false,
-            "description": "Override the contract sendInvoice setting. When true, allows downloading even if sendInvoice=false on the contract. Useful for admin operations or customer support scenarios."
-          },
           {
             "schema": {
               "type": "string"
             },
             "in": "path",
-            "name": "id",
+            "name": "processorId",
             "required": true
           }
         ],
         "x-expose-in-openapi": true,
         "responses": {
           "200": {
-            "description": "PDF binary or null when sendInvoice=false",
+            "description": "Default Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "PDF binary or null when sendInvoice=false"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The unique identifier of the invoice."
+                    },
+                    "displayId": {
+                      "type": "string",
+                      "description": "The human-readable identifier of the invoice."
+                    },
+                    "customer": {
+                      "type": "object",
+                      "description": "The customer associated with this invoice.",
+                      "properties": {
+                        "id": {
+                          "description": "The unique identifier of the customer in our system.",
+                          "type": "string"
+                        },
+                        "externalId": {
+                          "description": "An optional external identifier of the customer from the external system, used throughout the system to identify the customer. This field can not be updated.",
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9_-]+$",
+                          "example": "cust_1234567890abcdef"
+                        },
+                        "name": {
+                          "description": "The name of the customer.",
+                          "type": "string",
+                          "example": "Acme Inc."
+                        },
+                        "customFields": {
+                          "type": "object",
+                          "description": "Custom fields that can be associated with the customer. The fields must be previously created in the system before they can be used.",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "custom_field_1": "value1",
+                            "custom_field_2": "value2"
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "externalId",
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "paymentAccount": {
+                      "description": "The payment account used for this invoice.",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "The unique identifier of the payment account."
+                        },
+                        "businessName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "The legal business name of the payment account holder."
+                        },
+                        "tradeName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "nullable": true,
+                          "description": "The trade or \"doing business as\" name of the payment account holder."
+                        },
+                        "taxId": {
+                          "type": "string",
+                          "pattern": "^\\d{14}$",
+                          "description": "The tax identification number (CNPJ) of the payment account holder."
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "nullable": true,
+                          "description": "The contact email address for the payment account."
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "zipCode": {
+                              "type": "string",
+                              "minLength": 8,
+                              "maxLength": 8,
+                              "pattern": "^[0-9]{8}$",
+                              "description": "The postal code (CEP) of the address."
+                            },
+                            "number": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "The street number of the address."
+                            },
+                            "street": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "The street name of the address."
+                            },
+                            "neighborhood": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "The neighborhood or district of the address."
+                            },
+                            "city": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "The city name of the address."
+                            },
+                            "state": {
+                              "type": "string",
+                              "enum": [
+                                "AC",
+                                "AL",
+                                "AP",
+                                "AM",
+                                "BA",
+                                "CE",
+                                "DF",
+                                "ES",
+                                "GO",
+                                "MA",
+                                "MT",
+                                "MS",
+                                "MG",
+                                "PA",
+                                "PB",
+                                "PR",
+                                "PE",
+                                "PI",
+                                "RJ",
+                                "RN",
+                                "RS",
+                                "RO",
+                                "RR",
+                                "SC",
+                                "SP",
+                                "SE",
+                                "TO"
+                              ],
+                              "description": "The state abbreviation of the address."
+                            },
+                            "country": {
+                              "type": "string",
+                              "enum": [
+                                "Brasil"
+                              ],
+                              "description": "The country code of the address."
+                            },
+                            "complement": {
+                              "type": "string",
+                              "nullable": true,
+                              "description": "Additional address information like apartment number, floor, etc."
+                            }
+                          },
+                          "required": [
+                            "zipCode",
+                            "number",
+                            "street",
+                            "neighborhood",
+                            "city",
+                            "state",
+                            "country",
+                            "complement"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true,
+                          "description": "The physical address associated with the payment account."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "businessName",
+                        "tradeName",
+                        "taxId",
+                        "email",
+                        "address"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "The start date of the billing period."
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "The end date of the billing period."
+                    },
+                    "totalAmount": {
+                      "type": "number",
+                      "minimum": 0,
+                      "description": "The total amount to be paid for this invoice."
+                    },
+                    "closedReason": {
+                      "type": "string",
+                      "enum": [
+                        "end_of_cycle",
+                        "billing_end_day_updated"
+                      ],
+                      "nullable": true,
+                      "description": "The reason why the billing cycle was closed."
+                    },
+                    "payments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "amount": {
+                            "type": "number"
+                          },
+                          "dueDate": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "processedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "paymentMethod": {
+                            "type": "string",
+                            "enum": [
+                              "bolepix",
+                              "bank_slip",
+                              "pix"
+                            ],
+                            "nullable": true
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "created",
+                              "pending",
+                              "paid",
+                              "failed",
+                              "canceled",
+                              "expired"
+                            ]
+                          },
+                          "pixLink": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "bankSlipLink": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "amount",
+                          "dueDate",
+                          "createdAt",
+                          "processedAt",
+                          "paymentMethod",
+                          "status",
+                          "pixLink",
+                          "bankSlipLink"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "nullable": true,
+                      "description": "List of payments associated with this invoice."
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "open",
+                        "closed",
+                        "paid",
+                        "canceled"
+                      ],
+                      "description": "The current status of the invoice."
+                    },
+                    "plans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "description": "Plan schema defining core plan properties.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "The unique identifier for this plan."
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The name of the plan."
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional description of the plan."
+                          },
+                          "productId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "The ID of the product this plan is associated with."
+                          },
+                          "product": {
+                            "type": "object",
+                            "description": "The product associated with this plan.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "The unique identifier for this product."
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "The name of the product."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "planSettings": {
+                            "type": "object",
+                            "description": "Settings configuration for this plan.",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "The plan settings id."
+                              },
+                              "fixedAmount": {
+                                "type": "number",
+                                "minimum": 0,
+                                "description": "The fixed cost amount for this plan."
+                              },
+                              "minimumAmount": {
+                                "type": "number",
+                                "minimum": 0,
+                                "description": "The minimum cost amount for this plan."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "fixedAmount",
+                              "minimumAmount"
+                            ]
+                          },
+                          "metrics": {
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "description": "Invoice in full metric schema.",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The unique identifier for this metric."
+                                    },
+                                    "resourceId": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The ID of the resource this metric is associated with."
+                                    },
+                                    "currencyUnitId": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The ID of the currency unit this metric is associated with."
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "description": "The name of the metric."
+                                    },
+                                    "billingModel": {
+                                      "type": "string",
+                                      "description": "The billing model type, set to InFull.",
+                                      "enum": [
+                                        "in_full"
+                                      ]
+                                    },
+                                    "priceTierDivision": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unique_tier",
+                                        "progressive"
+                                      ],
+                                      "description": "The price tier division method for this metric."
+                                    },
+                                    "fixedAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The fixed cost amount for this metric."
+                                    },
+                                    "minimumAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The minimum cost amount for this metric."
+                                    },
+                                    "resourceName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "description": "The name of the resource."
+                                    },
+                                    "resourceType": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unit",
+                                        "currency"
+                                      ],
+                                      "description": "The resource type."
+                                    },
+                                    "currencyUnit": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "code": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "name",
+                                        "code"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "priceTiers": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "description": "Price tier configuration for a metric.",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The unique identifier for this price tier."
+                                          },
+                                          "billingType": {
+                                            "type": "string",
+                                            "enum": [
+                                              "unit",
+                                              "package",
+                                              "flat",
+                                              "basis_points"
+                                            ],
+                                            "description": "The billing type for this price tier."
+                                          },
+                                          "from": {
+                                            "type": "number",
+                                            "minimum": 1,
+                                            "description": "The starting value for this price tier."
+                                          },
+                                          "to": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "minimum": 1,
+                                            "description": "The ending value for this price tier. Null indicates no upper bound."
+                                          },
+                                          "packageSize": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "minimum": 1,
+                                            "description": "The package size for package-based billing. Null if not package-based."
+                                          },
+                                          "price": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "pattern": "^\\d+(\\.\\d{1,6})?$",
+                                            "description": "The price for this tier in decimal format."
+                                          },
+                                          "fixedPrice": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "pattern": "^\\d+(\\.\\d{1,6})?$",
+                                            "description": "The fixed price for this tier in decimal format."
+                                          },
+                                          "basisPoints": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "description": "The basis points associated with this price tier in decimal format",
+                                            "minimum": 0
+                                          },
+                                          "totalAmount": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "description": "The total amount for this price tier."
+                                          },
+                                          "usage": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "description": "The usage amount for this price tier."
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "billingType",
+                                          "from",
+                                          "to",
+                                          "packageSize",
+                                          "price",
+                                          "fixedPrice",
+                                          "basisPoints",
+                                          "totalAmount",
+                                          "usage"
+                                        ]
+                                      },
+                                      "description": "List of price tiers for this metric."
+                                    },
+                                    "totalAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The total amount for this metric."
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "resourceId",
+                                    "currencyUnitId",
+                                    "name",
+                                    "fixedAmount",
+                                    "minimumAmount",
+                                    "billingModel",
+                                    "priceTierDivision",
+                                    "resourceName",
+                                    "resourceType",
+                                    "priceTiers",
+                                    "totalAmount"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "description": "Invoice proration metric schema.",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The unique identifier for this metric."
+                                    },
+                                    "resourceId": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The ID of the resource this metric is associated with."
+                                    },
+                                    "currencyUnitId": {
+                                      "type": "string",
+                                      "format": "uuid",
+                                      "description": "The ID of the currency unit this metric is associated with."
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "description": "The name of the metric."
+                                    },
+                                    "billingModel": {
+                                      "type": "string",
+                                      "description": "The billing model type, set to Proration.",
+                                      "enum": [
+                                        "proration"
+                                      ]
+                                    },
+                                    "priceTierDivision": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unique_tier",
+                                        "progressive"
+                                      ],
+                                      "description": "The price tier division method for this metric."
+                                    },
+                                    "fixedAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The fixed cost amount for this metric."
+                                    },
+                                    "minimumAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The minimum cost amount for this metric."
+                                    },
+                                    "resourceName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "description": "The name of the resource."
+                                    },
+                                    "resourceType": {
+                                      "type": "string",
+                                      "enum": [
+                                        "unit",
+                                        "currency"
+                                      ],
+                                      "description": "The resource type."
+                                    },
+                                    "currencyUnit": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "code": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "name",
+                                        "code"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "totalAmount": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "description": "The total amount for this metric."
+                                    },
+                                    "priceTiers": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "description": "Price tier configuration for a metric.",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The unique identifier for this price tier."
+                                          },
+                                          "billingType": {
+                                            "type": "string",
+                                            "enum": [
+                                              "unit",
+                                              "package",
+                                              "flat",
+                                              "basis_points"
+                                            ],
+                                            "description": "The billing type for this price tier."
+                                          },
+                                          "from": {
+                                            "type": "number",
+                                            "minimum": 1,
+                                            "description": "The starting value for this price tier."
+                                          },
+                                          "to": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "minimum": 1,
+                                            "description": "The ending value for this price tier. Null indicates no upper bound."
+                                          },
+                                          "packageSize": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "minimum": 1,
+                                            "description": "The package size for package-based billing. Null if not package-based."
+                                          },
+                                          "price": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "pattern": "^\\d+(\\.\\d{1,6})?$",
+                                            "description": "The price for this tier in decimal format."
+                                          },
+                                          "fixedPrice": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "pattern": "^\\d+(\\.\\d{1,6})?$",
+                                            "description": "The fixed price for this tier in decimal format."
+                                          },
+                                          "basisPoints": {
+                                            "type": "number",
+                                            "nullable": true,
+                                            "description": "The basis points associated with this price tier in decimal format",
+                                            "minimum": 0
+                                          }
+                                        },
+                                        "required": [
+                                          "id",
+                                          "billingType",
+                                          "from",
+                                          "to",
+                                          "packageSize",
+                                          "price",
+                                          "fixedPrice",
+                                          "basisPoints"
+                                        ]
+                                      },
+                                      "description": "List of price tiers for this prorated metric."
+                                    },
+                                    "prorationMetricBillings": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "The unique identifier for this proration metric billing."
+                                          },
+                                          "intervalStart": {
+                                            "type": "string",
+                                            "description": "The start date of the proration interval."
+                                          },
+                                          "intervalEnd": {
+                                            "type": "string",
+                                            "description": "The end date of the proration interval."
+                                          },
+                                          "usage": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "description": "The usage amount for this proration period."
+                                          },
+                                          "amount": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "description": "The cost amount for this proration period."
+                                          }
+                                        },
+                                        "required": [
+                                          "usage",
+                                          "amount",
+                                          "intervalStart",
+                                          "intervalEnd"
+                                        ]
+                                      },
+                                      "description": "List of proration billing periods for this metric."
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "resourceId",
+                                    "currencyUnitId",
+                                    "name",
+                                    "fixedAmount",
+                                    "minimumAmount",
+                                    "billingModel",
+                                    "priceTierDivision",
+                                    "resourceName",
+                                    "resourceType",
+                                    "totalAmount",
+                                    "priceTiers",
+                                    "prorationMetricBillings"
+                                  ]
+                                }
+                              ]
+                            },
+                            "minItems": 1,
+                            "description": "List of metrics associated with this plan."
+                          },
+                          "totalAmount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "description": "The total amount for this plan."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "description",
+                          "productId",
+                          "totalAmount",
+                          "planSettings"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "minItems": 1,
+                      "description": "List of plans associated with this invoice."
+                    },
+                    "additionalItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "description": "Additional item object.",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "The additional item id."
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Name of the additional item."
+                          },
+                          "description": {
+                            "type": "string",
+                            "minLength": 1,
+                            "nullable": true,
+                            "description": "Optional description of the additional item."
+                          },
+                          "amount": {
+                            "type": "number",
+                            "minimum": 1,
+                            "description": "Cost amount of the additional item."
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "discount",
+                              "additional_charge"
+                            ],
+                            "description": "Type of the additional billing item."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "amount",
+                          "type",
+                          "description"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "List of additional items charged in this invoice."
+                    },
+                    "contract": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "The unique identifier of the contract."
+                        },
+                        "customFields": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Custom fields associated with the contract."
+                        },
+                        "processorId": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "External processor identifier for the contract."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "customFields",
+                        "processorId"
+                      ],
+                      "nullable": true,
+                      "description": "Contract information associated with this invoice."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "displayId",
+                    "customer",
+                    "paymentAccount",
+                    "payments",
+                    "startDate",
+                    "endDate",
+                    "totalAmount",
+                    "closedReason",
+                    "status",
+                    "plans",
+                    "additionalItems",
+                    "contract"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }
@@ -2342,41 +3237,31 @@
         }
       }
     },
-    "/v1/invoices/by-processor-id/{processorId}/document/download": {
+    "/v1/invoices/{id}/pdf/download": {
       "get": {
-        "summary": "Download an Invoice document by processorId",
+        "summary": "Download an Invoice document",
         "tags": [
           "Invoices"
         ],
-        "description": "Download an invoice PDF by its processorId. Optionally control sending via the query parameter.",
+        "description": "Download an invoice PDF by its id.",
         "parameters": [
-          {
-            "schema": {
-              "type": "boolean",
-              "nullable": true
-            },
-            "in": "query",
-            "name": "overrideSendInvoice",
-            "required": false,
-            "description": "Override the contract sendInvoice setting. When true, allows downloading even if sendInvoice=false on the contract. Useful for admin operations or customer support scenarios."
-          },
           {
             "schema": {
               "type": "string"
             },
             "in": "path",
-            "name": "processorId",
+            "name": "id",
             "required": true
           }
         ],
         "x-expose-in-openapi": true,
         "responses": {
           "200": {
-            "description": "PDF binary or null when sendInvoice=false",
+            "description": "PDF binary",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "PDF binary or null when sendInvoice=false"
+                  "description": "PDF binary"
                 }
               }
             }
@@ -2647,10 +3532,6 @@
                         "additionalProperties": {
                           "type": "string"
                         }
-                      },
-                      "sendInvoice": {
-                        "type": "boolean",
-                        "description": "Whether invoice documents can be sent for this contract. Optional; defaults to false if omitted."
                       }
                     },
                     "required": [
@@ -3315,10 +4196,6 @@
                         "additionalProperties": {
                           "type": "string"
                         }
-                      },
-                      "sendInvoice": {
-                        "type": "boolean",
-                        "description": "Whether invoice documents can be sent for this contract. Optional; defaults to false if omitted."
                       }
                     },
                     "required": [
