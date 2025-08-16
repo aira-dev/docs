@@ -2979,12 +2979,12 @@ paths:
             application/json:
               schema:
                 description: Invoice not found.
-  /v1/invoices/{id}/pdf/download:
+  /v1/invoices/{id}/pdf:
     get:
-      summary: Download invoice PDF
+      summary: Fetch invoice PDF
       tags:
         - Invoices
-      description: This endpoint allows download an invoice PDF by id
+      description: This endpoint allows fetching an invoice PDF by id.
       parameters:
         - schema:
             type: string
