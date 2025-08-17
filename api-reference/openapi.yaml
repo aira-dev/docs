@@ -2979,32 +2979,6 @@ paths:
             application/json:
               schema:
                 description: Invoice not found.
-  /v1/invoices/{id}/pdf:
-    get:
-      summary: Fetch invoice PDF
-      tags:
-        - Invoices
-      description: This endpoint allows fetching an invoice PDF by id.
-      parameters:
-        - schema:
-            type: string
-          in: path
-          name: id
-          required: true
-      x-expose-in-openapi: true
-      responses:
-        '200':
-          description: PDF binary
-          content:
-            application/json:
-              schema:
-                description: PDF binary
-        '404':
-          description: Invoice not found.
-          content:
-            application/json:
-              schema:
-                description: Invoice not found.
   /v1/contracts/:
     post:
       summary: Create contract
@@ -4929,6 +4903,33 @@ paths:
             application/json:
               schema:
                 description: Contract not found.
+  /v1/invoices/{id}/pdf:
+    get:
+      summary: Fetch invoice PDF
+      tags:
+        - Invoices
+      description: This endpoint allows fetching an invoice PDF.
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: id
+          required: true
+      x-expose-in-openapi: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Invoice not found.
+          content:
+            application/json:
+              schema:
+                description: Invoice not found.
 servers:
   - url: https://api.useaira.com
     description: Public API base URL
