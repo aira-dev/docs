@@ -814,7 +814,7 @@ paths:
             type: number
             default: 100
             minimum: 1
-            maximum: 1000
+            maximum: 100
           in: query
           name: limit
           required: true
@@ -1220,6 +1220,7 @@ paths:
                     - displayId
                     - customer
                     - paymentAccount
+                    - contract
                     - payments
                     - plans
                     - startDate
@@ -2113,6 +2114,7 @@ paths:
                   - displayId
                   - customer
                   - paymentAccount
+                  - contract
                   - payments
                   - startDate
                   - endDate
@@ -2121,7 +2123,6 @@ paths:
                   - status
                   - plans
                   - additionalItems
-                  - contract
                 additionalProperties: false
                 description: >-
                   The request was successfully processed and the invoice is
@@ -3012,6 +3013,7 @@ paths:
                   - displayId
                   - customer
                   - paymentAccount
+                  - contract
                   - payments
                   - startDate
                   - endDate
@@ -3020,7 +3022,6 @@ paths:
                   - status
                   - plans
                   - additionalItems
-                  - contract
                 additionalProperties: false
         '404':
           description: Invoice not found.
